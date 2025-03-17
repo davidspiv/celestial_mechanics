@@ -6,16 +6,13 @@
 #include "../include/coord.h"
 #include "../include/picture.h"
 
-struct Planet {
+struct CelestialBody {
   Coord pos;
   Coord vel;
   double mass;
 };
 
-const double G = 6.67430e-11;    // Gravitational constant [m^3 kg^-1 s^-2]
-const double mSun = 1.9891e30;   // Mass of the sun [kg]
-const double mEarth = 5.9722e24; // mass [kg]
-const double mMars = 6.39e23;
+const double G = 6.67430e-11; // Gravitational constant [m^3 kg^-1 s^-2]
 
 size_t scaleValue(double x, size_t currMax, size_t newMax) {
   if (!currMax) {
@@ -24,66 +21,76 @@ size_t scaleValue(double x, size_t currMax, size_t newMax) {
   return newMax * (x / currMax);
 }
 
-Coord calcAcc(const Planet &p1, const Planet &p2) {
-  static double combinedMassAccScalar = -G * (mSun + mEarth);
+Coord calcAcc(const CelestialBody &p1, const CelestialBody &p2) {
+  double combinedMassAccScalar = -G * (p1.mass + p2.mass);
   const double rSquared = p2.pos.distSquared(p1.pos); //[meters] distance
 
   return p1.pos * combinedMassAccScalar / (sqrt(rSquared) * rSquared);
 }
 
-Planet rungeKuttaStep(const Planet &p, const std::vector<Planet> &planets,
-                      int dt) {
+CelestialBody rungeKuttaStep(const CelestialBody &p,
+                             const std::vector<CelestialBody> &bodies, int dt) {
 
-  //   auto calcNetAcc = [&](const Planet &p) {
-  //     return std::accumulate(planets.begin(), planets.end(), Coord(0, 0, 0),
-  //                            [&p](const Coord &acc, const Planet &other) {
-  //                              return &p != &other ? acc + calcAcc(p, other)
-  //                                                  : acc;
-  //                            });
-  //   };
-
-  Planet sun = {{0, 0, 0}, {0, 0, 0}, mSun};
-
-  auto calcNetAcc = [&](const Planet &p) {
+  auto getTotalAcc = [&](const CelestialBody &p) {
+    static double mSun = 1.9891e30; // [kg]
+    static CelestialBody sun = {{0, 0, 0}, {0, 0, 0}, mSun};
     Coord acc{0, 0, 0};
+    acc = std::accumulate(
+        bodies.begin(), bodies.end(), acc,
+        [&](const Coord &totalAcc, const CelestialBody &other) {
+          return p.mass != other.mass ? totalAcc + calcAcc(p, other) : totalAcc;
+        });
 
     acc += calcAcc(p, sun);
-    acc = std::accumulate(planets.begin(), planets.end(), acc,
-                          [&](const Coord &totalAcc, const Planet &other) {
-                            return p.mass != other.mass
-                                       ? totalAcc + calcAcc(p, other)
-                                       : totalAcc;
-                          });
     return acc;
   };
 
   // Calculate Runge-Kutta terms
-  Coord k1v = calcNetAcc(p) * dt;
+  Coord k1v = getTotalAcc(p) * dt;
   Coord k1r = p.vel * dt;
-  Planet k1Planet{p.pos + k1r * 0.5, p.vel + k1v * 0.5, p.mass};
+  CelestialBody k1CelestialBody{p.pos + k1r * 0.5, p.vel + k1v * 0.5, p.mass};
 
-  Coord k2v = calcNetAcc(k1Planet) * dt;
+  Coord k2v = getTotalAcc(k1CelestialBody) * dt;
   Coord k2r = (p.vel + k1v * 0.5) * dt;
-  Planet k2Planet{p.pos + k2r * 0.5, p.vel + k2v * 0.5, p.mass};
+  CelestialBody k2CelestialBody{p.pos + k2r * 0.5, p.vel + k2v * 0.5, p.mass};
 
-  Coord k3v = calcNetAcc(k2Planet) * dt;
+  Coord k3v = getTotalAcc(k2CelestialBody) * dt;
   Coord k3r = (p.vel + k2v * 0.5) * dt;
-  Planet k3Planet{p.pos + k3r, p.vel + k3v, p.mass};
+  CelestialBody k3CelestialBody{p.pos + k3r, p.vel + k3v, p.mass};
 
-  Coord k4v = calcNetAcc(k3Planet) * dt;
+  Coord k4v = getTotalAcc(k3CelestialBody) * dt;
   Coord k4r = (p.vel + k3v) * dt;
 
-  Planet updatedPlanet = p;
-  updatedPlanet.vel += (k1v + k2v * 2.0 + k3v * 2.0 + k4v) * (1.0 / 6.0);
-  updatedPlanet.pos += (k1r + k2r * 2.0 + k3r * 2.0 + k4r) * (1.0 / 6.0);
+  CelestialBody updatedBody = p;
+  updatedBody.vel += (k1v + k2v * 2.0 + k3v * 2.0 + k4v) * (1.0 / 6.0);
+  updatedBody.pos += (k1r + k2r * 2.0 + k3r * 2.0 + k4r) * (1.0 / 6.0);
 
-  return updatedPlanet;
+  return updatedBody;
 }
 
 int main() {
-  Planet earth = {{1.4959e11, 0, 0}, {0, 29780, 0}, mEarth};
-  Planet mars = {{2.27942e11, 0, 0}, {0, 24100, 0}, mMars};
-  std::vector<Planet> planets{earth, mars};
+  const double mMercury = 3.3011e23; // [kg]
+  const double mVenus = 4.8670e24;
+  const double mEarth = 5.9722e24;
+  const double mMars = 6.3900e23;
+  //   const double mJupiter = 1.8982e27;
+  //   const double mSaturn = 5.6834e26;
+  //   const double mUranus = 8.6810e25;
+  //   const double mNeptune = 1.0241e26;
+  //   const double mPluto = 1.3030e22;
+
+  // [m], [m/s]
+  CelestialBody mercury = {{5.7910e10, 0, 0}, {0, 4.7870e4, 0}, mMercury};
+  CelestialBody venus = {{1.0770e11, 0, 0}, {0, 3.5000e4, 0}, mVenus};
+  CelestialBody earth = {{1.4959e11, 0, 0}, {0, 2.9780e4, 0}, mEarth};
+  CelestialBody mars = {{2.2794e11, 0, 0}, {0, 2.4100e4, 0}, mMars};
+  //   CelestialBody  jupiter = {{7.7857e11, 0, 0}, {0, 1.3070e4, 0}, mJupiter};
+  //   CelestialBody  saturn = {{1.4335e12, 0, 0}, {0, 9.6900e3, 0}, mSaturn};
+  //   CelestialBody  uranus = {{2.8725e12, 0, 0}, {0, 6.8100e3, 0}, mUranus};
+  //   CelestialBody  neptune = {{4.4951e12, 0, 0}, {0, 5.4300e3, 0}, mNeptune};
+  //   CelestialBody  pluto = {{5.9064e12, 0, 0}, {0, 4.7400e3, 0}, mPluto};
+
+  std::vector<CelestialBody> bodies{mercury, venus, earth, mars};
 
   const int picWidth = 300;
   const int picHeight = 300;
@@ -96,14 +103,13 @@ int main() {
   const int steps = secondsPerYear / static_cast<int>(dt);
 
   for (int i = 0; i < steps; i++) {
-    std::vector<Planet> newPlanets;
-    for (const auto &p : planets) {
-      newPlanets.push_back(rungeKuttaStep(p, planets, dt));
+    std::vector<CelestialBody> updatedBody;
+    for (const auto &p : bodies) {
+      updatedBody.push_back(rungeKuttaStep(p, bodies, dt));
     }
-    planets = newPlanets;
-    // planets.at(0) = rungeKuttaStep(planets.at(0), planets, dt);
+    bodies = updatedBody;
 
-    for (Planet p : planets) {
+    for (CelestialBody p : bodies) {
       Coord pos = p.pos / 1.496e+11;
       int x = scaleValue(pos.x, 2, 150) + picWidth / 2;
       int y = scaleValue(-pos.y, 2, 150) + picHeight / 2;
