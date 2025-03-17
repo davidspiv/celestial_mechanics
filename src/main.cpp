@@ -22,10 +22,10 @@ size_t scaleValue(double x, size_t currMax, size_t newMax) {
 }
 
 Coord calcAcc(const CelestialBody &p1, const CelestialBody &p2) {
-  double combinedMassAccScalar = -G * (p1.mass + p2.mass);
+  double gravitationalFactor = -G * (p1.mass + p2.mass);
   const double rSquared = p2.pos.distSquared(p1.pos); //[meters] distance
 
-  return p1.pos * combinedMassAccScalar / (sqrt(rSquared) * rSquared);
+  return p1.pos * gravitationalFactor / (sqrt(rSquared) * rSquared);
 }
 
 CelestialBody rungeKuttaStep(const CelestialBody &p,
