@@ -15,7 +15,6 @@ struct Planet {
 const double G = 6.67430e-11;    // Gravitational constant [m^3 kg^-1 s^-2]
 const double mSun = 1.9891e30;   // Mass of the sun [kg]
 const double mEarth = 5.9722e24; //[kg] mass of earth
-const double combinedMassAccScalar = -G * (mSun + mEarth);
 
 size_t scaleValue(double x, size_t currMax, size_t newMax) {
   if (!currMax) {
@@ -25,7 +24,8 @@ size_t scaleValue(double x, size_t currMax, size_t newMax) {
 }
 
 Coord calcAcc(const Planet &p1, const Planet &p2) {
-  double rSquared = p2.pos.distSquared(p1.pos); //[meters] distance
+  static double combinedMassAccScalar = -G * (mSun + mEarth);
+  const double rSquared = p2.pos.distSquared(p1.pos); //[meters] distance
 
   return p1.pos * combinedMassAccScalar / (sqrt(rSquared) * rSquared);
 }
