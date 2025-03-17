@@ -16,7 +16,7 @@ struct CelestialBody {
 };
 
 const double G = 6.67430e-11;      // Gravitational constant
-const double mMercury = 3.3011e21; // [kg]
+const double mMercury = 3.3011e23; // [kg]
 const double mVenus = 4.8670e24;
 const double mEarth = 5.9722e24;
 const double mMars = 6.3900e23;
