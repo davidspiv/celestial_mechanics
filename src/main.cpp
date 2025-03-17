@@ -14,7 +14,8 @@ struct Planet {
 
 const double G = 6.67430e-11;    // Gravitational constant [m^3 kg^-1 s^-2]
 const double mSun = 1.9891e30;   // Mass of the sun [kg]
-const double mEarth = 5.9722e24; //[kg] mass of p
+const double mEarth = 5.9722e24; // mass [kg]
+const double mMars = 6.39e23;
 
 size_t scaleValue(double x, size_t currMax, size_t newMax) {
   if (!currMax) {
@@ -33,17 +34,28 @@ Coord calcAcc(const Planet &p1, const Planet &p2) {
 Planet rungeKuttaStep(const Planet &p, const std::vector<Planet> &planets,
                       int dt) {
 
-  auto calcNetAcc = [&](const Planet &p) {
-    return std::accumulate(planets.begin(), planets.end(), Coord(0, 0, 0),
-                           [&p](const Coord &acc, const Planet &other) {
-                             return &p != &other ? acc + calcAcc(p, other)
-                                                 : acc;
-                           });
-  };
+  //   auto calcNetAcc = [&](const Planet &p) {
+  //     return std::accumulate(planets.begin(), planets.end(), Coord(0, 0, 0),
+  //                            [&p](const Coord &acc, const Planet &other) {
+  //                              return &p != &other ? acc + calcAcc(p, other)
+  //                                                  : acc;
+  //                            });
+  //   };
 
   Planet sun = {{0, 0, 0}, {0, 0, 0}, mSun};
 
-  //   auto calcNetAcc = [&](const Planet &p) { return calcAcc(p, sun); };
+  auto calcNetAcc = [&](const Planet &p) {
+    Coord acc{0, 0, 0};
+
+    acc += calcAcc(p, sun);
+    acc = std::accumulate(planets.begin(), planets.end(), acc,
+                          [&](const Coord &totalAcc, const Planet &other) {
+                            return p.mass != other.mass
+                                       ? totalAcc + calcAcc(p, other)
+                                       : totalAcc;
+                          });
+    return acc;
+  };
 
   // Calculate Runge-Kutta terms
   Coord k1v = calcNetAcc(p) * dt;
@@ -70,7 +82,7 @@ Planet rungeKuttaStep(const Planet &p, const std::vector<Planet> &planets,
 
 int main() {
   Planet earth = {{1.4959e11, 0, 0}, {0, 29780, 0}, mEarth};
-  Planet mars = {{2.27942e11, 0, 0}, {0, 24100, 0}, mEarth};
+  Planet mars = {{2.27942e11, 0, 0}, {0, 24100, 0}, mMars};
   std::vector<Planet> planets{earth, mars};
 
   const int picWidth = 300;
