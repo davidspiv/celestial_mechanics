@@ -25,8 +25,7 @@ Coord calcAcc(const PlanetState &p1, const PlanetState &p2) {
 }
 
 PlanetState rungeKuttaStep(const PlanetState &planet,
-                           const std::vector<PlanetState> &planets, double
-                           dt) {
+                           const std::vector<PlanetState> &planets, double dt) {
   auto calcNetAcc = [&](const PlanetState &p) {
     return std::accumulate(planets.begin(), planets.end(), Coord(0, 0, 0),
                            [&p](const Coord &acc, const PlanetState &other) {
@@ -50,8 +49,8 @@ PlanetState rungeKuttaStep(const PlanetState &planet,
   Coord k3r = (planet.velocity + k2v * 0.5) * dt;
 
   Coord k4v =
-      calcNetAcc({planet.position + k3r, planet.velocity + k3v, planet.mass})
-      * dt;
+      calcNetAcc({planet.position + k3r, planet.velocity + k3v, planet.mass}) *
+      dt;
 
   Coord k4r = (planet.velocity + k3v) * dt;
 
