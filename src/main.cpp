@@ -123,16 +123,16 @@ int main() {
   }
 
   for (CelestialBody body : bodies) {
-    std::cout << "-------------------------\n";
-    std::cout << setw(8) << "Name " << body.name << ":\n";
+    std::cout << "----------------------------------------------------------\n";
+    std::cout << setw(14) << "Name: " << body.name << "\n";
     Coord acc = getTotalAcc(body);
-    std::cout << setw(8) << "Acc [m/s/s]: ";
+    std::cout << setw(14) << "Acc [m/s/s]: ";
     acc.print();
     Coord vel = body.vel;
-    std::cout << setw(8) << "Vel [m/s]: ";
+    std::cout << setw(14) << "Vel [m/s]: ";
     vel.print();
     Coord pos = body.pos / 1.496e+11;
-    std::cout << setw(8) << "Pos [AU]: ";
+    std::cout << setw(14) << "Pos [AU]: ";
     pos.print();
   }
 

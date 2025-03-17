@@ -1,4 +1,5 @@
 #include <cmath>
+#include <iomanip>
 #include <iostream>
 
 class Coord {
@@ -44,8 +45,11 @@ double Coord::distSquared(const Coord &other) const {
 }
 
 void Coord::print() const {
-  std::cout << "X: " << x << ", Y: " << y << ", Z: " << z << std::endl;
-};
+  std::cout << std::left << std::fixed << std::setprecision(5)
+            << "X: " << std::setw(14) << x << "Y: " << std::setw(14) << y
+            << "Z: " << std::setw(14) << z << '\n'
+            << std::right;
+}
 
 Coord Coord::operator+(const Coord &other) const {
   return {x + other.x, y + other.y, z + other.z};
