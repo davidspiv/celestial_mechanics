@@ -33,17 +33,17 @@ Coord calcAcc(const Planet &p1, const Planet &p2) {
 Planet rungeKuttaStep(const Planet &p, const std::vector<Planet> &planets,
                       int dt) {
 
-  //   auto calcNetAcc = [&](const Planet &p) {
-  //     return std::accumulate(planets.begin(), planets.end(), Coord(0, 0, 0),
-  //                            [&p](const Coord &acc, const Planet &other) {
-  //                              return &p != &other ? acc + calcAcc(p, other)
-  //                                                  : acc;
-  //                            });
-  //   };
-  
+  auto calcNetAcc = [&](const Planet &p) {
+    return std::accumulate(planets.begin(), planets.end(), Coord(0, 0, 0),
+                           [&p](const Coord &acc, const Planet &other) {
+                             return &p != &other ? acc + calcAcc(p, other)
+                                                 : acc;
+                           });
+  };
+
   Planet sun = {{0, 0, 0}, {0, 0, 0}, mSun};
 
-  auto calcNetAcc = [&](const Planet &p) { return calcAcc(p, sun); };
+  //   auto calcNetAcc = [&](const Planet &p) { return calcAcc(p, sun); };
 
   // Calculate Runge-Kutta terms
   Coord k1v = calcNetAcc(p) * dt;
