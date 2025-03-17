@@ -30,7 +30,7 @@ Coord calcAcc(const Planet &p1, const Planet &p2) {
   return p1.pos * combinedMassAccScalar / (sqrt(rSquared) * rSquared);
 }
 
-Planet rungeKuttaStep(const Planet &earth, const Planet &sun, double dt) {
+Planet rungeKuttaStep(const Planet &earth, const Planet &sun, int dt) {
 
   // Calculate Runge-Kutta terms
   Coord k1v = calcAcc(earth, sun) * dt;
@@ -67,8 +67,8 @@ int main() {
   pic.set(picCenter, picCenter, 255, 0, 0);
 
   double secondsPerYear = 31536000;
-  double dt = 600.0; // 10-minute intervals
-  const int steps = secondsPerYear / static_cast<int>(dt); // Adjust for new dt
+  int dt = 600; // 10-minute intervals
+  const int steps = secondsPerYear / static_cast<int>(dt);
   for (int i = 0; i < steps; i++) {
 
     planets.at(1) = rungeKuttaStep(planets.at(1), planets.at(0), dt);
