@@ -38,7 +38,7 @@ CelestialBody mars = {"Mars", {2.2794e11, 0, 0}, {0, 2.4100e4, 0}, mMars};
 //   CelestialBody  neptune = {{4.4951e12, 0, 0}, {0, 5.4300e3, 0}, mNeptune};
 //   CelestialBody  pluto = {{5.9064e12, 0, 0}, {0, 4.7400e3, 0}, mPluto};
 
-std::vector<CelestialBody> bodies{mercury, venus, earth, mars};
+std::vector<CelestialBody> planets{mercury, venus, earth, mars};
 
 size_t scaleValue(double x, size_t currMax, size_t newMax) {
   if (!currMax) {
@@ -58,7 +58,7 @@ Coord getTotalAcc(const CelestialBody &p) {
   static double mSun = 1.9891e30; // [kg]
   static CelestialBody sun = {"Sun", {0, 0, 0}, {0, 0, 0}, mSun};
   Coord acc{0, 0, 0};
-  acc = std::accumulate(bodies.begin(), bodies.end(), acc,
+  acc = std::accumulate(planets.begin(), planets.end(), acc,
                         [&](const Coord &totalAcc, const CelestialBody &other) {
                           return p.mass != other.mass
                                      ? totalAcc + calcAcc(p, other)
@@ -109,12 +109,12 @@ int main() {
 
   for (int i = 0; i < steps; i++) {
     std::vector<CelestialBody> updatedBody;
-    for (const auto &p : bodies) {
+    for (const auto &p : planets) {
       updatedBody.push_back(rungeKuttaStep(p, dt));
     }
-    bodies = updatedBody;
+    planets = updatedBody;
 
-    for (CelestialBody p : bodies) {
+    for (CelestialBody p : planets) {
       Coord pos = p.pos / 1.496e+11;
       int x = scaleValue(pos.x, 2, 150) + picWidth / 2;
       int y = scaleValue(-pos.y, 2, 150) + picHeight / 2;
@@ -122,7 +122,7 @@ int main() {
     }
   }
 
-  for (CelestialBody body : bodies) {
+  for (CelestialBody body : planets) {
     std::cout << "----------------------------------------------------------\n";
     std::cout << setw(14) << "Name: " << body.name << "\n";
     Coord acc = getTotalAcc(body);
