@@ -1,4 +1,5 @@
 #include <cmath>
+#include <iomanip>
 #include <iostream>
 #include <numeric>
 #include <string>
@@ -123,15 +124,15 @@ int main() {
 
   for (CelestialBody body : bodies) {
     std::cout << "-------------------------\n";
-    std::cout << "Name " << body.name << ":\n";
+    std::cout << setw(8) << "Name " << body.name << ":\n";
     Coord acc = getTotalAcc(body);
-    std::cout << "Acceleration [m/s/s]: ";
+    std::cout << setw(8) << "Acc [m/s/s]: ";
     acc.print();
     Coord vel = body.vel;
-    std::cout << "Velocity [m/s]: ";
+    std::cout << setw(8) << "Vel [m/s]: ";
     vel.print();
     Coord pos = body.pos / 1.496e+11;
-    std::cout << "Position [AU]: ";
+    std::cout << setw(8) << "Pos [AU]: ";
     pos.print();
   }
 
