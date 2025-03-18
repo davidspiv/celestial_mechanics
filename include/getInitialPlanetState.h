@@ -5,6 +5,6 @@
 
 std::vector<CelestialBody> populatePlanets();
 
-Coord calcHeliocentricCoord(const CelestialBody &planet);
+void getInitialPlanetState(CelestialBody &planet);
 
 #endif

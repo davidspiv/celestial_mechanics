@@ -13,7 +13,9 @@
 const double M_PER_AU = 1.496e11;
 const double M_PER_KM = 1000;
 
-const double G = 6.67430e-11;      // Gravitational constant
+const double G = 6.67430e-11;    // Gravitational constant
+static double M_SUN = 1.9891e30; // [kg]
+
 const double mMercury = 3.3011e23; // [kg]
 const double mVenus = 4.8670e24;
 const double mEarth = 5.9722e24;
@@ -85,8 +87,7 @@ Coord calcAcc(const CelestialBody &p1, const CelestialBody &p2) {
 }
 
 Coord getTotalAcc(const CelestialBody &p) {
-  static double mSun = 1.9891e30; // [kg]
-  static CelestialBody sun = {"Sun", {0, 0, 0}, {0, 0, 0}, mSun};
+  static CelestialBody sun = {"Sun", {0, 0, 0}, {0, 0, 0}, M_SUN};
   Coord acc{0, 0, 0};
   acc = std::accumulate(planets.begin(), planets.end(), acc,
                         [&](const Coord &totalAcc, const CelestialBody &other) {
@@ -138,8 +139,12 @@ int main() {
   //   const int steps = secondsPerYear / dt;
 
   vector<CelestialBody> planets2 = populatePlanets();
-  Coord initialState = calcHeliocentricCoord(planets2.at(2));
-  initialState.print();
+  getInitialPlanetState(planets2.at(2));
+  std::cout << "VEL: ";
+  planets2.at(2).vel.print();
+  std::cout << "POS: ";
+  planets2.at(2).pos = planets2.at(2).pos / M_PER_AU;
+  planets2.at(2).pos.print();
 
   //   for (int i = 0; i < steps; i++) {
   //     std::vector<CelestialBody> updatedBody;
