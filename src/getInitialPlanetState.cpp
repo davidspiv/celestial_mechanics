@@ -105,22 +105,22 @@ double calcEccentricAnomaly(double eccentricity, double meanAnomaly) {
 // calculates the heliocentric coordinates of the planet at the specified time
 void getInitialPlanetState(CelestialBody &planet) {
 
-  const double G = 6.67430e-11;      // Gravitational constant
-  static double M_SUN = 1.988416e30; // [kg]
+  const double G = 6.67430e-11;     // Gravitational constant
+  const double M_SUN = 1.988416e30; // [kg]
   const double M_PER_AU = 149597870700;
 
-  // orbital elements normalized to J2000
+  // Orbital elements normalized to J2000
   const double a = planet.semiMajorAxis * M_PER_AU;
   const double e = planet.eccentricity;
   const double o = toRadians(planet.longitudeOfAscendingNode);
   const double p = toRadians(planet.longitudeOfPerihelion);
   const double i = toRadians(planet.orbitalInclination);
 
-  // normalized to specified date
+  // Mean anomaly
   const double M = toRadians(planet.meanAnomaly);
   const double E = calcEccentricAnomaly(e, M);
 
-  // position in 2d orbital plane
+  // Position in 2D orbital plane
   const double xv = a * (cos(E) - e);
   const double yv = a * (sqrt(1.0 - e * e) * sin(E));
 
@@ -133,7 +133,7 @@ void getInitialPlanetState(CelestialBody &planet) {
   // of the ellipse, in this case the sun.
   const double r = sqrt(xv * xv + yv * yv);
 
-  // heliocentric 3d cartesian coordinates
+  // Heliocentric 3D cartesian coordinates
   const double xh =
       r * (cos(o) * cos(v + p - o) - sin(o) * sin(v + p - o) * cos(i));
   const double yh =
@@ -142,7 +142,7 @@ void getInitialPlanetState(CelestialBody &planet) {
 
   planet.pos = {xh, yh, zh};
 
-  // Calculate the period and gravitational parameter
+  // Calculate the gravitational parameter
   const double mu = G * (M_SUN + planet.mass);
 
   // Calculate the orbital velocity magnitude (vis-viva equation)
