@@ -19,5 +19,4 @@ struct CelestialBody {
   double period;
 };
 
-
 #endif

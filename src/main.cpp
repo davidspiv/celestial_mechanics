@@ -16,11 +16,6 @@ const double M_PER_KM = 1000;
 const double G = 6.67430e-11;    // Gravitational constant
 static double M_SUN = 1.9891e30; // [kg]
 
-const double mMercury = 3.3011e23; // [kg]
-const double mVenus = 4.8670e24;
-const double mEarth = 5.9722e24;
-const double mMars = 6.3900e23;
-
 vector<CelestialBody> planets = populatePlanets();
 
 size_t scaleValue(double x, size_t currMax, size_t newMax) {
@@ -87,9 +82,10 @@ int main() {
 
   for (size_t i = 0; i < planets.size(); i++) {
     getInitialPlanetState(planets.at(i));
+    getPeriod(planets.at(i));
+    // planets.at(i).mass = 5.97237e24;
+    // getMass(planets.at(i));
   }
-
-  planets.at(0).mass = 5.9722e24;
 
   double secondsPerYear = 31536000;
   int dt = 600; // 10-minute intervals
@@ -117,19 +113,26 @@ int main() {
   //     pic.set(x, y, 0, 255, 0);
   //   }
 
-  for (CelestialBody body : planets) {
-    std::cout << "----------------------------------------------------------\n";
-    std::cout << setw(14) << "Name: " << body.name << "\n";
-    Coord acc = getTotalAcc(body);
-    std::cout << setw(14) << "Acc [m/s/s]: ";
-    acc.print();
-    Coord vel = body.vel / M_PER_KM;
-    std::cout << setw(14) << "Vel [m/s]: ";
-    vel.print();
-    Coord pos = body.pos / M_PER_AU;
-    std::cout << setw(14) << "Pos [AU]: ";
-    pos.print();
+  for (CelestialBody p : planets) {
+    double distanceInM = sqrt(p.pos.distSquared(planets.at(2).pos));
+    std::cout << p.name << ": " << distanceInM / M_PER_AU << std::endl;
   }
+
+
+  //   for (CelestialBody body : planets) {
+  //     std::cout <<
+  //     "----------------------------------------------------------\n";
+  //     std::cout << setw(14) << "Name: " << body.name << "\n";
+  //     Coord acc = getTotalAcc(body);
+  //     std::cout << setw(14) << "Acc [m/s/s]: ";
+  //     acc.print();
+  //     Coord vel = body.vel / M_PER_KM;
+  //     std::cout << setw(14) << "Vel [m/s]: ";
+  //     vel.print();
+  //     Coord pos = body.pos / M_PER_AU;
+  //     std::cout << setw(14) << "Pos [AU]: ";
+  //     pos.print();
+  //   }
 
   pic.save("result.png");
   return 0;

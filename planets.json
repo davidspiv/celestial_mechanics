@@ -1,6 +1,26 @@
 {
 	"orbitalElements": [
 		{
+			"name": "mercury",
+			"semiMajorAxis": 0.38709893,
+			"eccentricity": 0.20563069,
+			"orbitalInclination": 7.00487,
+			"longitudeOfAscendingNode": 48.33167,
+			"longitudeOfPerihelion": 77.45645,
+			"meanAnomaly": 174.796,
+			"mass": 3.3011e23
+		},
+		{
+			"name": "venus",
+			"semiMajorAxis": 0.72333199,
+			"eccentricity": 0.00677323,
+			"orbitalInclination": 3.39471,
+			"longitudeOfAscendingNode": 76.68069,
+			"longitudeOfPerihelion": 131.53298,
+			"meanAnomaly": 50.45,
+			"mass": 4.8675e24
+		},
+		{
 			"name": "earth",
 			"semiMajorAxis": 1.00000011,
 			"eccentricity": 0.01671022,
@@ -8,7 +28,17 @@
 			"longitudeOfAscendingNode": -11.26064,
 			"longitudeOfPerihelion": 102.94719,
 			"meanAnomaly": 357.51716,
-			"period": 365.259636
+			"mass": 5.97237e24
+		},
+		{
+			"name": "mars",
+			"semiMajorAxis": 1.52366231,
+			"eccentricity": 0.09341233,
+			"orbitalInclination": 1.85061,
+			"longitudeOfAscendingNode": 49.57854,
+			"longitudeOfPerihelion": 336.04084,
+			"meanAnomaly": 19.387,
+			"mass": 6.4171e23
 		}
 	]
 }

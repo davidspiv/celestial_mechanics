@@ -8,6 +8,24 @@
 #include <string>
 #include <vector>
 
+const double G = 6.67430e-11;     // Gravitational constant
+const double M_SUN = 1.988416e30; // [kg]
+const double M_PER_AU = 149597870700;
+const double S_PER_YR = 31556952;
+
+void getPeriod(CelestialBody &p) {
+  const double a = p.semiMajorAxis * M_PER_AU; // Convert AU to meters
+  p.period = (2 * M_PI * sqrt(pow(a, 3) / (G * M_SUN)));
+}
+
+
+// Calculate mass from period (if needed)
+void getMass(CelestialBody &p) {
+  const double a = p.semiMajorAxis * M_PER_AU;
+  p.mass = ((4 * M_PI * M_PI * pow(a, 3)) / (G * p.period * p.period));
+}
+
+
 // returns value sans quotes regardless if its a string or a number
 std::string getValueFromJSONLine(std::string line) {
   const size_t startIndex = line.rfind(':', line.length() - 1) + 2;
@@ -59,11 +77,12 @@ std::vector<CelestialBody> populatePlanets() {
       std::getline(fileStream, line);
       planet.meanAnomaly = std::stod(getValueFromJSONLine(line));
 
+      std::getline(fileStream, line);
+      planet.mass = std::stod(getValueFromJSONLine(line));
 
       planet.period = 0;
       planet.pos = {0, 0, 0};
       planet.vel = {0, 0, 0};
-      planet.mass = 0;
 
       planets.push_back(planet);
     }
@@ -104,10 +123,6 @@ double calcEccentricAnomaly(double eccentricity, double meanAnomaly) {
 
 // calculates the heliocentric coordinates of the planet at the specified time
 void getInitialPlanetState(CelestialBody &planet) {
-
-  const double G = 6.67430e-11;     // Gravitational constant
-  const double M_SUN = 1.988416e30; // [kg]
-  const double M_PER_AU = 149597870700;
 
   // Orbital elements normalized to J2000
   const double a = planet.semiMajorAxis * M_PER_AU;
