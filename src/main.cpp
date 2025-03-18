@@ -91,7 +91,7 @@ int main() {
   int dt = 600; // 10-minute intervals
   const int steps = secondsPerYear / dt;
 
-  for (int i = 0; i < steps; i++) {
+  for (int i = 0; i < steps * 10; i++) {
     std::vector<CelestialBody> updatedBody;
     for (const auto &p : planets) {
       updatedBody.push_back(rungeKuttaStep(p, dt));
