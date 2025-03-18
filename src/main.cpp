@@ -5,15 +5,10 @@
 #include <string>
 #include <vector>
 
+#include "../include/celestialBody.h"
 #include "../include/coord.h"
+#include "../include/getInitialPlanetState.h"
 #include "../include/picture.h"
-
-struct CelestialBody {
-  string name;
-  Coord pos;
-  Coord vel;
-  double mass;
-};
 
 const double M_PER_AU = 1.496e11;
 const double M_PER_KM = 1000;
@@ -64,12 +59,14 @@ CelestialBody earth = {
      1.817836783024607E-04 * M_PER_KM},
     mEarth};
 
-// CelestialBody mars = {"Mars", {2.2794e11, 0, 0}, {0, 2.4100e4, 0}, mMars};
-//   CelestialBody  jupiter = {{7.7857e11, 0, 0}, {0, 1.3070e4, 0}, mJupiter};
-//   CelestialBody  saturn = {{1.4335e12, 0, 0}, {0, 9.6900e3, 0}, mSaturn};
-//   CelestialBody  uranus = {{2.8725e12, 0, 0}, {0, 6.8100e3, 0}, mUranus};
-//   CelestialBody  neptune = {{4.4951e12, 0, 0}, {0, 5.4300e3, 0}, mNeptune};
-//   CelestialBody  pluto = {{5.9064e12, 0, 0}, {0, 4.7400e3, 0}, mPluto};
+// CelestialBody mars = {"Mars", {2.2794e11, 0, 0}, {0, 2.4100e4, 0},
+// mMars};
+//   CelestialBody  jupiter = {{7.7857e11, 0, 0}, {0, 1.3070e4, 0},
+//   mJupiter}; CelestialBody  saturn = {{1.4335e12, 0, 0}, {0, 9.6900e3,
+//   0}, mSaturn}; CelestialBody  uranus = {{2.8725e12, 0, 0}, {0, 6.8100e3,
+//   0}, mUranus}; CelestialBody  neptune = {{4.4951e12, 0, 0},
+//   {0, 5.4300e3, 0}, mNeptune}; CelestialBody  pluto = {{5.9064e12, 0, 0},
+//   {0, 4.7400e3, 0}, mPluto};
 
 std::vector<CelestialBody> planets{earth};
 
@@ -136,31 +133,35 @@ int main() {
   Picture pic(picWidth, picHeight, 0, 0, 0);
   pic.set(picCenter, picCenter, 255, 0, 0);
 
-  double secondsPerYear = 31536000;
-  int dt = 600; // 10-minute intervals
-  const int steps = secondsPerYear / dt;
+  //   double secondsPerYear = 31536000;
+  //   int dt = 600; // 10-minute intervals
+  //   const int steps = secondsPerYear / dt;
 
-  for (int i = 0; i < steps; i++) {
-    std::vector<CelestialBody> updatedBody;
-    for (const auto &p : planets) {
-      updatedBody.push_back(rungeKuttaStep(p, dt));
-    }
-    planets = updatedBody;
+  vector<CelestialBody> planets2 = populatePlanets();
+  Coord initialState = calcHeliocentricCoord(planets2.at(2));
+  initialState.print();
 
-    for (CelestialBody p : planets) {
-      Coord pos = p.pos / M_PER_AU;
-      int x = scaleValue(pos.x, 2, 150) + picWidth / 2;
-      int y = scaleValue(-pos.y, 2, 150) + picHeight / 2;
-      pic.set(x, y, 0, 255, 0);
-    }
-  }
+  //   for (int i = 0; i < steps; i++) {
+  //     std::vector<CelestialBody> updatedBody;
+  //     for (const auto &p : planets) {
+  //       updatedBody.push_back(rungeKuttaStep(p, dt));
+  //     }
+  //     planets = updatedBody;
 
-  //   for (CelestialBody p : planets) {
-  //     Coord pos = p.pos / 1.496e+11;
-  //     int x = scaleValue(pos.x, 2, 150) + picWidth / 2;
-  //     int y = scaleValue(-pos.y, 2, 150) + picHeight / 2;
-  //     pic.set(x, y, 0, 255, 0);
+  //     for (CelestialBody p : planets) {
+  //       Coord pos = p.pos / M_PER_AU;
+  //       int x = scaleValue(pos.x, 2, 150) + picWidth / 2;
+  //       int y = scaleValue(-pos.y, 2, 150) + picHeight / 2;
+  //       pic.set(x, y, 0, 255, 0);
+  //     }
   //   }
+
+  for (CelestialBody p : planets) {
+    Coord pos = p.pos / 1.496e+11;
+    int x = scaleValue(pos.x, 2, 150) + picWidth / 2;
+    int y = scaleValue(-pos.y, 2, 150) + picHeight / 2;
+    pic.set(x, y, 0, 255, 0);
+  }
 
   for (CelestialBody body : planets) {
     std::cout << "----------------------------------------------------------\n";
