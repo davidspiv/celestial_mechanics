@@ -20,6 +20,7 @@ const double mMercury = 3.3011e23; // [kg]
 const double mVenus = 4.8670e24;
 const double mEarth = 5.9722e24;
 const double mMars = 6.3900e23;
+
 //   const double mJupiter = 1.8982e27;
 //   const double mSaturn = 5.6834e26;
 //   const double mUranus = 8.6810e25;
@@ -53,13 +54,13 @@ const double mMars = 6.3900e23;
 // CelestialBody venus = {"Venus", {1.0770e11, 0, 0}, {0, 3.5000e4, 0}, mVenus};
 // CelestialBody earth = {"Earth", {1.4959e11, 0, 0}, {0, 2.9780e4, 0}, mEarth};
 
-CelestialBody earth = {
-    "Earth",
-    {-1.756637922977122E-01 * M_PER_AU, 9.659912850526895E-01 * M_PER_AU,
-     2.020629118443605E-04 * M_PER_AU},
-    {-2.979426007051617E+01 * M_PER_KM, -5.469294939330306E+00 * M_PER_KM,
-     1.817836783024607E-04 * M_PER_KM},
-    mEarth};
+// CelestialBody earth = {
+//     "Earth",
+//     {-1.756637922977122E-01 * M_PER_AU, 9.659912850526895E-01 * M_PER_AU,
+//      2.020629118443605E-04 * M_PER_AU},
+//     {-2.979426007051617E+01 * M_PER_KM, -5.469294939330306E+00 * M_PER_KM,
+//      1.817836783024607E-04 * M_PER_KM},
+//     mEarth};
 
 // CelestialBody mars = {"Mars", {2.2794e11, 0, 0}, {0, 2.4100e4, 0},
 // mMars};
@@ -70,7 +71,7 @@ CelestialBody earth = {
 //   {0, 5.4300e3, 0}, mNeptune}; CelestialBody  pluto = {{5.9064e12, 0, 0},
 //   {0, 4.7400e3, 0}, mPluto};
 
-std::vector<CelestialBody> planets{earth};
+vector<CelestialBody> planets = populatePlanets();
 
 size_t scaleValue(double x, size_t currMax, size_t newMax) {
   if (!currMax) {
@@ -134,39 +135,42 @@ int main() {
   Picture pic(picWidth, picHeight, 0, 0, 0);
   pic.set(picCenter, picCenter, 255, 0, 0);
 
-  //   double secondsPerYear = 31536000;
-  //   int dt = 600; // 10-minute intervals
-  //   const int steps = secondsPerYear / dt;
-
-  vector<CelestialBody> planets2 = populatePlanets();
-  getInitialPlanetState(planets2.at(2));
-  std::cout << "VEL: ";
-  planets2.at(2).vel.print();
-  std::cout << "POS: ";
-  planets2.at(2).pos = planets2.at(2).pos / M_PER_AU;
-  planets2.at(2).pos.print();
-
-  //   for (int i = 0; i < steps; i++) {
-  //     std::vector<CelestialBody> updatedBody;
-  //     for (const auto &p : planets) {
-  //       updatedBody.push_back(rungeKuttaStep(p, dt));
-  //     }
-  //     planets = updatedBody;
-
-  //     for (CelestialBody p : planets) {
-  //       Coord pos = p.pos / M_PER_AU;
-  //       int x = scaleValue(pos.x, 2, 150) + picWidth / 2;
-  //       int y = scaleValue(-pos.y, 2, 150) + picHeight / 2;
-  //       pic.set(x, y, 0, 255, 0);
-  //     }
-  //   }
-
-  for (CelestialBody p : planets) {
-    Coord pos = p.pos / 1.496e+11;
-    int x = scaleValue(pos.x, 2, 150) + picWidth / 2;
-    int y = scaleValue(-pos.y, 2, 150) + picHeight / 2;
-    pic.set(x, y, 0, 255, 0);
+  for (size_t i = 0; i < planets.size(); i++) {
+    getInitialPlanetState(planets.at(i));
   }
+
+  //   getInitialPlanetState(planets2.at(2));
+  //   std::cout << "VEL: ";
+  //   planets2.at(2).vel.print();
+  //   std::cout << "POS: ";
+  //   planets2.at(2).pos = planets2.at(2).pos / M_PER_AU;
+  //   planets2.at(2).pos.print();
+
+  double secondsPerYear = 31536000;
+  int dt = 600; // 10-minute intervals
+  const int steps = secondsPerYear / dt;
+
+  for (int i = 0; i < steps; i++) {
+    std::vector<CelestialBody> updatedBody;
+    for (const auto &p : planets) {
+      updatedBody.push_back(rungeKuttaStep(p, dt));
+    }
+    planets = updatedBody;
+
+    for (CelestialBody p : planets) {
+      Coord pos = p.pos / M_PER_AU;
+      int x = scaleValue(pos.x, 2, 150) + picWidth / 2;
+      int y = scaleValue(-pos.y, 2, 150) + picHeight / 2;
+      pic.set(x, y, 0, 255, 0);
+    }
+  }
+
+  //   for (CelestialBody p : planets) {
+  //     Coord pos = p.pos / 1.496e+11;
+  //     int x = scaleValue(pos.x, 2, 150) + picWidth / 2;
+  //     int y = scaleValue(-pos.y, 2, 150) + picHeight / 2;
+  //     pic.set(x, y, 0, 255, 0);
+  //   }
 
   for (CelestialBody body : planets) {
     std::cout << "----------------------------------------------------------\n";
@@ -174,10 +178,10 @@ int main() {
     Coord acc = getTotalAcc(body);
     std::cout << setw(14) << "Acc [m/s/s]: ";
     acc.print();
-    Coord vel = body.vel;
+    Coord vel = body.vel / M_PER_KM;
     std::cout << setw(14) << "Vel [m/s]: ";
     vel.print();
-    Coord pos = body.pos / 1.496e+11;
+    Coord pos = body.pos / M_PER_AU;
     std::cout << setw(14) << "Pos [AU]: ";
     pos.print();
   }

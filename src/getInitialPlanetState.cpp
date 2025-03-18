@@ -105,9 +105,9 @@ double calcEccentricAnomaly(double eccentricity, double meanAnomaly) {
 // calculates the heliocentric coordinates of the planet at the specified time
 void getInitialPlanetState(CelestialBody &planet) {
 
-  const double G = 6.67430e-11;    // Gravitational constant
-  static double M_SUN = 1.9891e30; // [kg]
-  const double M_PER_AU = 1.496e11;
+  const double G = 6.67430e-11;      // Gravitational constant
+  static double M_SUN = 1.988416e30; // [kg]
+  const double M_PER_AU = 149597870700;
 
   // orbital elements normalized to J2000
   const double a = planet.semiMajorAxis * M_PER_AU;
@@ -149,11 +149,10 @@ void getInitialPlanetState(CelestialBody &planet) {
   const double orbitalVel = sqrt(mu * (2.0 / r - 1.0 / a));
 
   // Velocity in 3D space (perpendicular to radius in the orbital plane)
-  const double vxh =
-      -cos(o) * sin(v + p - o) + sin(o) * cos(v + p - o) * cos(i);
-  const double vyh =
-      -sin(o) * sin(v + p - o) + cos(o) * cos(v + p - o) * cos(i);
-  const double vzh = -cos(v + p - o) * sin(i);
+  const double vxh = sin(o) * cos(v + p - o) + cos(o) * sin(v + p - o) * cos(i);
+  const double vyh = cos(o) * cos(v + p - o) - sin(o) * sin(v + p - o) * cos(i);
+  const double vzh = sin(v + p - o) * sin(i);
 
-  planet.vel = {orbitalVel * vxh, orbitalVel * vyh, orbitalVel * vzh};
+
+  planet.vel = {orbitalVel * -vxh, orbitalVel * vyh, orbitalVel * vzh};
 }

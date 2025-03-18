@@ -1,24 +1,6 @@
 {
 	"orbitalElementsJ2000": [
 		{
-			"name": "mercury",
-			"semiMajorAxis": 0.38709893,
-			"eccentricity": 0.20563069,
-			"orbitalInclination": 7.00487,
-			"longitudeOfAscendingNode": 48.33167,
-			"longitudeOfPerihelion": 77.45645,
-			"meanAnomaly": 174.796
-		},
-		{
-			"name": "venus",
-			"semiMajorAxis": 0.72333199,
-			"eccentricity": 0.00677323,
-			"orbitalInclination": 3.39471,
-			"longitudeOfAscendingNode": 76.68069,
-			"longitudeOfPerihelion": 131.53298,
-			"meanAnomaly": 50.45
-		},
-		{
 			"name": "earth",
 			"semiMajorAxis": 1.00000011,
 			"eccentricity": 0.01671022,
@@ -26,51 +8,6 @@
 			"longitudeOfAscendingNode": -11.26064,
 			"longitudeOfPerihelion": 102.94719,
 			"meanAnomaly": 357.51716
-		},
-		{
-			"name": "mars",
-			"semiMajorAxis": 1.52366231,
-			"eccentricity": 0.09341233,
-			"orbitalInclination": 1.85061,
-			"longitudeOfAscendingNode": 49.57854,
-			"longitudeOfPerihelion": 336.04084,
-			"meanAnomaly": 19.387
-		},
-		{
-			"name": "jupiter",
-			"semiMajorAxis": 5.20336301,
-			"eccentricity": 0.04839266,
-			"orbitalInclination": 1.30530,
-			"longitudeOfAscendingNode": 100.55615,
-			"longitudeOfPerihelion": 14.75385,
-			"meanAnomaly": 20.020
-		},
-		{
-			"name": "saturn",
-			"semiMajorAxis": 9.53707032,
-			"eccentricity": 0.05415060,
-			"orbitalInclination": 2.48446,
-			"longitudeOfAscendingNode": 113.71504,
-			"longitudeOfPerihelion": 92.43194,
-			"meanAnomaly": 317.020
-		},
-		{
-			"name": "uranus",
-			"semiMajorAxis": 19.19126393,
-			"eccentricity": 0.04716771,
-			"orbitalInclination": 0.76986,
-			"longitudeOfAscendingNode": 74.22988,
-			"longitudeOfPerihelion": 170.96424,
-			"meanAnomaly": 142.238600
-		},
-		{
-			"name": "neptune",
-			"semiMajorAxis": 30.06896348,
-			"eccentricity": 0.00858587,
-			"orbitalInclination": 1.76917,
-			"longitudeOfAscendingNode": 131.72169,
-			"longitudeOfPerihelion": 44.97135,
-			"meanAnomaly": 259.883
 		}
 	]
 }
