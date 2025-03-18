@@ -15,8 +15,8 @@ struct CelestialBody {
   double mass;
 };
 
-const double METERS_PER_AU = 1.496e11;
-const double SECONDS_PER_DAY = 86400;
+const double M_PER_AU = 1.496e11;
+const double M_PER_KM = 1000;
 
 const double G = 6.67430e-11;      // Gravitational constant
 const double mMercury = 3.3011e23; // [kg]
@@ -58,12 +58,10 @@ const double mMars = 6.3900e23;
 
 CelestialBody earth = {
     "Earth",
-    {-1.756637922977122E-01 * METERS_PER_AU,
-     9.659912850526895E-01 * METERS_PER_AU,
-     2.020629118443605E-04 * METERS_PER_AU},
-    {-1.720762506877444E-02 * METERS_PER_AU / SECONDS_PER_DAY,
-     -3.158782144070574E-03 * METERS_PER_AU / SECONDS_PER_DAY,
-     1.049888593456605E-07 * METERS_PER_AU / SECONDS_PER_DAY},
+    {-1.756637922977122E-01 * M_PER_AU, 9.659912850526895E-01 * M_PER_AU,
+     2.020629118443605E-04 * M_PER_AU},
+    {-2.979426007051617E+01 * M_PER_KM, -5.469294939330306E+00 * M_PER_KM,
+     1.817836783024607E-04 * M_PER_KM},
     mEarth};
 
 // CelestialBody mars = {"Mars", {2.2794e11, 0, 0}, {0, 2.4100e4, 0}, mMars};
@@ -142,27 +140,27 @@ int main() {
   int dt = 600; // 10-minute intervals
   const int steps = secondsPerYear / dt;
 
-  //   for (int i = 0; i < steps; i++) {
-  //     std::vector<CelestialBody> updatedBody;
-  //     for (const auto &p : planets) {
-  //       updatedBody.push_back(rungeKuttaStep(p, dt));
-  //     }
-  //     planets = updatedBody;
+  for (int i = 0; i < steps; i++) {
+    std::vector<CelestialBody> updatedBody;
+    for (const auto &p : planets) {
+      updatedBody.push_back(rungeKuttaStep(p, dt));
+    }
+    planets = updatedBody;
 
-  //     for (CelestialBody p : planets) {
-  //       Coord pos = p.pos / METERS_PER_AU;
-  //       int x = scaleValue(pos.x, 2, 150) + picWidth / 2;
-  //       int y = scaleValue(-pos.y, 2, 150) + picHeight / 2;
-  //       pic.set(x, y, 0, 255, 0);
-  //     }
-  // }
-
-  for (CelestialBody p : planets) {
-    Coord pos = p.pos / 1.496e+11;
-    int x = scaleValue(pos.x, 2, 150) + picWidth / 2;
-    int y = scaleValue(-pos.y, 2, 150) + picHeight / 2;
-    pic.set(x, y, 0, 255, 0);
+    for (CelestialBody p : planets) {
+      Coord pos = p.pos / M_PER_AU;
+      int x = scaleValue(pos.x, 2, 150) + picWidth / 2;
+      int y = scaleValue(-pos.y, 2, 150) + picHeight / 2;
+      pic.set(x, y, 0, 255, 0);
+    }
   }
+
+  //   for (CelestialBody p : planets) {
+  //     Coord pos = p.pos / 1.496e+11;
+  //     int x = scaleValue(pos.x, 2, 150) + picWidth / 2;
+  //     int y = scaleValue(-pos.y, 2, 150) + picHeight / 2;
+  //     pic.set(x, y, 0, 255, 0);
+  //   }
 
   for (CelestialBody body : planets) {
     std::cout << "----------------------------------------------------------\n";
