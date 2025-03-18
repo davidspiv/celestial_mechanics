@@ -91,27 +91,27 @@ int main() {
   int dt = 600; // 10-minute intervals
   const int steps = secondsPerYear / dt;
 
-  for (int i = 0; i < steps * 10; i++) {
+  for (int i = 0; i < steps; i++) {
     std::vector<CelestialBody> updatedBody;
     for (const auto &p : planets) {
       updatedBody.push_back(rungeKuttaStep(p, dt));
     }
     planets = updatedBody;
 
-    for (CelestialBody p : planets) {
-      Coord pos = p.pos / M_PER_AU;
-      int x = scaleValue(pos.x, 2, 150) + picWidth / 2;
-      int y = scaleValue(-pos.y, 2, 150) + picHeight / 2;
-      pic.set(x, y, 0, 255, 0);
-    }
+    // for (CelestialBody p : planets) {
+    //   Coord pos = p.pos / M_PER_AU;
+    //   int x = scaleValue(pos.x, 2, 150) + picWidth / 2;
+    //   int y = scaleValue(-pos.y, 2, 150) + picHeight / 2;
+    //   pic.set(x, y, 0, 255, 0);
+    // }
   }
 
-  //   for (CelestialBody p : planets) {
-  //     Coord pos = p.pos / 1.496e+11;
-  //     int x = scaleValue(pos.x, 2, 150) + picWidth / 2;
-  //     int y = scaleValue(-pos.y, 2, 150) + picHeight / 2;
-  //     pic.set(x, y, 0, 255, 0);
-  //   }
+  for (CelestialBody p : planets) {
+    Coord pos = p.pos / 1.496e+11;
+    int x = scaleValue(pos.x, 2, 150) + picWidth / 2;
+    int y = scaleValue(-pos.y, 2, 150) + picHeight / 2;
+    pic.set(x, y, 0, 255, 0);
+  }
 
   for (CelestialBody p : planets) {
     double distanceInM = sqrt(p.pos.distSquared(planets.at(2).pos));
