@@ -86,7 +86,7 @@ int main() {
     for (CelestialBody p : planets) {
       Coord pos = p.pos / M_PER_AU;
       int x = scaleValue(pos.x, 31, picCenter) + picWidth / 2;
-      int y = scaleValue(-pos.y, 31, picCenter) + picHeight / 2;
+      int y = scaleValue(pos.y, 31, picCenter) + picHeight / 2;
       pic.set(x, y, 0, 255, 0);
     }
   }
