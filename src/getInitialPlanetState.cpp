@@ -78,7 +78,7 @@ void getInitialPlanetState(CelestialBody &planet) {
   const double yh = sin(o) * cos(v + p - o) + cos(o) * sin(v + p - o) * cos(i);
   const double zh = sin(v + p - o) * sin(i);
 
-  // Heliocentric 3D cartesian coordinates
+    // Heliocentric 3D cartesian coordinates
   planet.pos = {r * xh, r * yh, r * zh};
 
   // Calculate the gravitational parameter
@@ -87,7 +87,7 @@ void getInitialPlanetState(CelestialBody &planet) {
   // Calculate the orbital velocity magnitude (vis-viva equation)
   const double orbitalSpeed = sqrt(mu * (2.0 / r - 1.0 / a));
 
-  planet.vel = {orbitalSpeed * yh, orbitalSpeed * xh, orbitalSpeed * zh};
+  planet.vel = {orbitalSpeed * -yh, orbitalSpeed * xh, orbitalSpeed * zh};
 }
 
 
