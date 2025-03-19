@@ -26,45 +26,45 @@ size_t scaleValue(double x, size_t currMax, size_t newMax) {
 }
 
 Coord calcAcc(const CelestialBody &p1, const CelestialBody &p2) {
-  double gravitationalFactor = -G * (p1.mass + p2.mass);
-  const double rSquared = p2.pos.distSquared(p1.pos); //[meters] distance
+  //   double gravitationalFactor = -G * (p1.mass + p2.mass);
+  double gravitationalFactor = -G * p2.mass;
+  const double rSquared = p2.pos.magSquared(p1.pos); //[meters] distance
 
   return p1.pos * gravitationalFactor / (sqrt(rSquared) * rSquared);
 }
 
-Coord getTotalAcc(const CelestialBody &p) {
-  static CelestialBody sun = {"Sun", {0, 0, 0}, {0, 0, 0}, M_SUN};
+Coord sumAcc(const CelestialBody &p) {
+  static CelestialBody sun{"Sun", {0, 0, 0}, {0, 0, 0}, M_SUN};
   Coord acc{0, 0, 0};
-  
-  acc = std::accumulate(planets.begin(), planets.end(), acc,
-                        [&](const Coord &totalAcc, const CelestialBody &other) {
-                          return p.mass != other.mass
-                                     ? totalAcc + calcAcc(p, other)
-                                     : totalAcc;
-                        });
 
   acc += calcAcc(p, sun);
+  acc += std::accumulate(
+      planets.begin(), planets.end(), acc,
+      [&](const Coord &totalAcc, const CelestialBody &other) {
+        return p.mass != other.mass ? totalAcc + calcAcc(p, other) : totalAcc;
+      });
+
   return acc;
 };
 
 CelestialBody rungeKuttaStep(const CelestialBody &p, int dt) {
 
   // Calculate Runge-Kutta terms
-  Coord k1v = getTotalAcc(p) * dt;
+  Coord k1v = sumAcc(p) * dt;
   Coord k1r = p.vel * dt;
   CelestialBody k1CelestialBody{"", p.pos + k1r * 0.5, p.vel + k1v * 0.5,
                                 p.mass};
 
-  Coord k2v = getTotalAcc(k1CelestialBody) * dt;
+  Coord k2v = sumAcc(k1CelestialBody) * dt;
   Coord k2r = (p.vel + k1v * 0.5) * dt;
   CelestialBody k2CelestialBody{"", p.pos + k2r * 0.5, p.vel + k2v * 0.5,
                                 p.mass};
 
-  Coord k3v = getTotalAcc(k2CelestialBody) * dt;
+  Coord k3v = sumAcc(k2CelestialBody) * dt;
   Coord k3r = (p.vel + k2v * 0.5) * dt;
   CelestialBody k3CelestialBody{"", p.pos + k3r, p.vel + k3v, p.mass};
 
-  Coord k4v = getTotalAcc(k3CelestialBody) * dt;
+  Coord k4v = sumAcc(k3CelestialBody) * dt;
   Coord k4r = (p.vel + k3v) * dt;
 
   CelestialBody updatedBody = p;
@@ -115,7 +115,7 @@ int main() {
 
   std::cout << "----------------------------------------------------------\n";
   std::cout << setw(14) << "Name: " << planets.at(2).name << "\n";
-  Coord acc = getTotalAcc(planets.at(2));
+  Coord acc = sumAcc(planets.at(2));
   std::cout << setw(14) << "Acc [m/s/s]: ";
   acc.print();
   Coord vel = planets.at(2).vel / M_PER_KM;
