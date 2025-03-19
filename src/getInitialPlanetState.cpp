@@ -25,6 +25,53 @@ void getMass(CelestialBody &p) {
   p.mass = ((4 * M_PI * M_PI * pow(a, 3)) / (G * p.period * p.period));
 }
 
+// calculates the heliocentric coordinates of the planet at the specified time
+void getInitialPlanetState(CelestialBody &planet) {
+
+  // Orbital elements normalized to J2000
+  const double a = planet.semiMajorAxis * M_PER_AU;
+  const double e = planet.eccentricity;
+  const double o = toRadians(planet.longitudeOfAscendingNode);
+  const double p = toRadians(planet.longitudeOfPerihelion);
+  const double i = toRadians(planet.orbitalInclination);
+
+  // Mean anomaly
+  const double M = toRadians(planet.meanAnomaly);
+  const double E = calcEccentricAnomaly(e, M);
+
+  // Position in 2D orbital plane
+  const double xv = a * (cos(E) - e);
+  const double yv = a * (sqrt(1.0 - e * e) * sin(E));
+
+  // The True Anomaly (v)
+  const double v = atan2(yv, xv);
+
+  // The radius vector (r)
+  const double r = sqrt(xv * xv + yv * yv);
+
+  // Heliocentric 3D cartesian coordinates
+  const double xh =
+      r * (cos(o) * cos(v + p - o) - sin(o) * sin(v + p - o) * cos(i));
+  const double yh =
+      r * (sin(o) * cos(v + p - o) + cos(o) * sin(v + p - o) * cos(i));
+  const double zh = r * (sin(v + p - o) * sin(i));
+
+  planet.pos = {xh, yh, zh};
+
+  // Calculate the gravitational parameter
+  const double mu = G * (M_SUN + planet.mass);
+
+  // Calculate the orbital velocity magnitude (vis-viva equation)
+  const double orbitalVel = sqrt(mu * (2.0 / r - 1.0 / a));
+
+  // Velocity in 3D space (perpendicular to radius in the orbital plane)
+  const double vxh = sin(o) * cos(v + p - o) + cos(o) * sin(v + p - o) * cos(i);
+  const double vyh = cos(o) * cos(v + p - o) - sin(o) * sin(v + p - o) * cos(i);
+  const double vzh = sin(v + p - o) * sin(i);
+
+  planet.vel = {orbitalVel * -vxh, orbitalVel * vyh, orbitalVel * vzh};
+}
+
 
 // returns value sans quotes regardless if its a string or a number
 std::string getValueFromJSONLine(std::string line) {
@@ -80,9 +127,13 @@ std::vector<CelestialBody> populatePlanets() {
       std::getline(fileStream, line);
       planet.mass = std::stod(getValueFromJSONLine(line));
 
-      planet.period = 0;
+      // have to initialize all variables before passing object?
       planet.pos = {0, 0, 0};
       planet.vel = {0, 0, 0};
+      planet.period = 0;
+
+      getInitialPlanetState(planet);
+      getPeriod(planet);
 
       planets.push_back(planet);
     }
@@ -119,55 +170,4 @@ double calcEccentricAnomaly(double eccentricity, double meanAnomaly) {
   }
 
   return E;
-}
-
-// calculates the heliocentric coordinates of the planet at the specified time
-void getInitialPlanetState(CelestialBody &planet) {
-
-  // Orbital elements normalized to J2000
-  const double a = planet.semiMajorAxis * M_PER_AU;
-  const double e = planet.eccentricity;
-  const double o = toRadians(planet.longitudeOfAscendingNode);
-  const double p = toRadians(planet.longitudeOfPerihelion);
-  const double i = toRadians(planet.orbitalInclination);
-
-  // Mean anomaly
-  const double M = toRadians(planet.meanAnomaly);
-  const double E = calcEccentricAnomaly(e, M);
-
-  // Position in 2D orbital plane
-  const double xv = a * (cos(E) - e);
-  const double yv = a * (sqrt(1.0 - e * e) * sin(E));
-
-  // The True Anomaly (v) is the final angle we need to define the position
-  // of a satellite in orbit, the other two being Eccentric Anomaly (E) and
-  // Mean Anomaly (M).
-  const double v = atan2(yv, xv);
-
-  // The radius vector (r) is the distance of the satellite to the focal point
-  // of the ellipse, in this case the sun.
-  const double r = sqrt(xv * xv + yv * yv);
-
-  // Heliocentric 3D cartesian coordinates
-  const double xh =
-      r * (cos(o) * cos(v + p - o) - sin(o) * sin(v + p - o) * cos(i));
-  const double yh =
-      r * (sin(o) * cos(v + p - o) + cos(o) * sin(v + p - o) * cos(i));
-  const double zh = r * (sin(v + p - o) * sin(i));
-
-  planet.pos = {xh, yh, zh};
-
-  // Calculate the gravitational parameter
-  const double mu = G * (M_SUN + planet.mass);
-
-  // Calculate the orbital velocity magnitude (vis-viva equation)
-  const double orbitalVel = sqrt(mu * (2.0 / r - 1.0 / a));
-
-  // Velocity in 3D space (perpendicular to radius in the orbital plane)
-  const double vxh = sin(o) * cos(v + p - o) + cos(o) * sin(v + p - o) * cos(i);
-  const double vyh = cos(o) * cos(v + p - o) - sin(o) * sin(v + p - o) * cos(i);
-  const double vzh = sin(v + p - o) * sin(i);
-
-
-  planet.vel = {orbitalVel * -vxh, orbitalVel * vyh, orbitalVel * vzh};
 }

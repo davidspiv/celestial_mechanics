@@ -35,6 +35,7 @@ Coord calcAcc(const CelestialBody &p1, const CelestialBody &p2) {
 Coord getTotalAcc(const CelestialBody &p) {
   static CelestialBody sun = {"Sun", {0, 0, 0}, {0, 0, 0}, M_SUN};
   Coord acc{0, 0, 0};
+  
   acc = std::accumulate(planets.begin(), planets.end(), acc,
                         [&](const Coord &totalAcc, const CelestialBody &other) {
                           return p.mass != other.mass
@@ -79,13 +80,6 @@ int main() {
   const int picCenter = picWidth / 2;
   Picture pic(picWidth, picHeight, 0, 0, 0);
   pic.set(picCenter, picCenter, 255, 0, 0);
-
-  for (size_t i = 0; i < planets.size(); i++) {
-    getInitialPlanetState(planets.at(i));
-    getPeriod(planets.at(i));
-    // planets.at(i).mass = 5.97237e24;
-    // getMass(planets.at(i));
-  }
 
   double secondsPerYear = 31536000;
   int dt = 600; // 10-minute intervals
