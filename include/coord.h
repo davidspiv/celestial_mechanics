@@ -11,7 +11,7 @@ public:
   Coord(double x, double y, double z);
 
   Coord rCoord(const Coord &other) const;
-  double distSquared(const Coord &other) const;
+  double magSquared(const Coord &other) const;
   // magnitude()
   // normalize()
 

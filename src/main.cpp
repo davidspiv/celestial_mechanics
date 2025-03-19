@@ -9,43 +9,33 @@
 #include "../include/coord.h"
 #include "../include/getInitialPlanetState.h"
 #include "../include/picture.h"
-
-const double M_PER_AU = 1.496e11;
-const double M_PER_KM = 1000;
-
-const double G = 6.67430e-11;    // Gravitational constant
-static double M_SUN = 1.9891e30; // [kg]
+#include "../include/timer.h"
+#include "../include/util.h"
 
 vector<CelestialBody> planets = populatePlanets();
 
-size_t scaleValue(double x, size_t currMax, size_t newMax) {
-  if (!currMax) {
-    throw std::invalid_argument("currMax cannot be zero");
-  }
-  return newMax * (x / currMax);
-}
-
 Coord calcAcc(const CelestialBody &p1, const CelestialBody &p2) {
-  //   double gravitationalFactor = -G * (p1.mass + p2.mass);
-  double gravitationalFactor = -G * p2.mass;
+  double gravitationalFactor = -G * (p1.mass + p2.mass);
   const double rSquared = p2.pos.magSquared(p1.pos); //[meters] distance
 
   return p1.pos * gravitationalFactor / (sqrt(rSquared) * rSquared);
 }
 
+
 Coord sumAcc(const CelestialBody &p) {
-  static CelestialBody sun{"Sun", {0, 0, 0}, {0, 0, 0}, M_SUN};
+  static CelestialBody sun = {"Sun", {0, 0, 0}, {0, 0, 0}, M_SUN};
   Coord acc{0, 0, 0};
 
-  acc += calcAcc(p, sun);
   acc += std::accumulate(
       planets.begin(), planets.end(), acc,
       [&](const Coord &totalAcc, const CelestialBody &other) {
         return p.mass != other.mass ? totalAcc + calcAcc(p, other) : totalAcc;
       });
+  acc += calcAcc(p, sun);
 
   return acc;
 };
+
 
 CelestialBody rungeKuttaStep(const CelestialBody &p, int dt) {
 
@@ -75,6 +65,7 @@ CelestialBody rungeKuttaStep(const CelestialBody &p, int dt) {
 }
 
 int main() {
+  Timer timer;
   const int picWidth = 500;
   const int picHeight = 500;
   const int picCenter = picWidth / 2;
@@ -82,13 +73,13 @@ int main() {
   pic.set(picCenter, picCenter, 255, 0, 0);
 
   double secondsPerYear = 31536000;
-  int dt = 600; // 10-minute intervals
+  const int dt = 600; // 10-minute intervals
   const int steps = secondsPerYear / dt;
 
   for (int i = 0; i < steps; i++) {
     std::vector<CelestialBody> updatedBody;
     for (const auto &p : planets) {
-      updatedBody.push_back(rungeKuttaStep(p, dt));
+      updatedBody.emplace_back(rungeKuttaStep(p, dt));
     }
     planets = updatedBody;
 
@@ -107,23 +98,23 @@ int main() {
   //     pic.set(x, y, 255, 0, 0);
   //   }
 
-  //   for (CelestialBody p : planets) {
-  //     double distanceInM = sqrt(p.pos.distSquared(planets.at(2).pos));
-  //     std::cout << p.name << ": " << distanceInM / M_PER_AU << std::endl;
-  //   }
+  for (CelestialBody p : planets) {
+    double distanceInM = sqrt(p.pos.magSquared(planets.at(2).pos));
+    std::cout << p.name << ": " << distanceInM / M_PER_AU << std::endl;
+  }
 
 
-  std::cout << "----------------------------------------------------------\n";
-  std::cout << setw(14) << "Name: " << planets.at(2).name << "\n";
-  Coord acc = sumAcc(planets.at(2));
-  std::cout << setw(14) << "Acc [m/s/s]: ";
-  acc.print();
-  Coord vel = planets.at(2).vel / M_PER_KM;
-  std::cout << setw(14) << "Vel [m/s]: ";
-  vel.print();
-  Coord pos = planets.at(2).pos / M_PER_AU;
-  std::cout << setw(14) << "Pos [AU]: ";
-  pos.print();
+  //   std::cout <<
+  //   "----------------------------------------------------------\n"; std::cout
+  //   << setw(14) << "Name: " << planets.at(2).name << "\n"; Coord acc =
+  //   sumAcc(planets.at(2)); std::cout << setw(14) << "Acc [m/s/s]: ";
+  //   acc.print();
+  //   Coord pos = planets.at(2).pos / M_PER_AU;
+  //   std::cout << setw(14) << "Pos [AU]: ";
+  //   pos.print();
+  //   Coord vel = planets.at(2).vel / (M_PER_AU / S_PER_DAY);
+  //   std::cout << setw(14) << "Vel [m/s]: ";
+  //   vel.print();
 
 
   pic.save("result.png");

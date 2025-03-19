@@ -15,7 +15,7 @@ Coord Coord::rCoord(const Coord &other) const {
   return Coord(xD, yD, zD);
 };
 
-double Coord::distSquared(const Coord &other) const {
+double Coord::magSquared(const Coord &other) const {
   const double xD = other.x - x;
   const double yD = other.y - y;
   const double zD = other.z - z;

@@ -8,35 +8,61 @@
 #include <string>
 #include <vector>
 
-const double G = 6.67430e-11;     // Gravitational constant
-const double M_SUN = 1.988416e30; // [kg]
-const double M_PER_AU = 149597870700;
-const double S_PER_YR = 31556952;
 
 void getPeriod(CelestialBody &p) {
-  const double a = p.semiMajorAxis * M_PER_AU; // Convert AU to meters
+  const double a = p.semiMajorAxis;
   p.period = (2 * M_PI * sqrt(pow(a, 3) / (G * M_SUN)));
 }
 
 
 // Calculate mass from period (if needed)
 void getMass(CelestialBody &p) {
-  const double a = p.semiMajorAxis * M_PER_AU;
+  const double a = p.semiMajorAxis;
   p.mass = ((4 * M_PI * M_PI * pow(a, 3)) / (G * p.period * p.period));
+}
+
+// Numerical approximation of Eccentric Anomaly (E) using the Newton-Raphson
+// method
+double calcEccentricAnomaly(double eccentricity, double meanAnomaly) {
+  const double e = eccentricity;
+  const double M = meanAnomaly;
+  auto isConverging = [](int count) { return count < 19; };
+
+  // the inverse of the standard form of Kepler's equation
+  double E = M + e * sin(M) * (1 + e * cos(M));
+
+  double delta;
+  int iterationCount = 0;
+
+  do {
+    const double E1 = E - (E - e * sin(E) - M) / (1 - e * cos(E));
+    delta = abs(E1 - E);
+    E = E1;
+    iterationCount++;
+  } while (delta >= 0.000001 && isConverging(iterationCount));
+
+  // failsafe, should never happen with current planet selection
+  if (!isConverging(iterationCount)) {
+    std::cout << "calcEccentricAnomaly() failed. unable to converge." << '\n'
+              << "delta: " + std::to_string(delta);
+    exit(1);
+  }
+
+  return E;
 }
 
 // calculates the heliocentric coordinates of the planet at the specified time
 void getInitialPlanetState(CelestialBody &planet) {
 
   // Orbital elements normalized to J2000
-  const double a = planet.semiMajorAxis * M_PER_AU;
+  const double a = planet.semiMajorAxis;
   const double e = planet.eccentricity;
-  const double o = toRadians(planet.longitudeOfAscendingNode);
-  const double p = toRadians(planet.longitudeOfPerihelion);
-  const double i = toRadians(planet.orbitalInclination);
+  const double o = planet.longitudeOfAscendingNode;
+  const double p = planet.longitudeOfPerihelion;
+  const double i = planet.orbitalInclination;
 
   // Mean anomaly
-  const double M = toRadians(planet.meanAnomaly);
+  const double M = planet.meanAnomaly; //
   const double E = calcEccentricAnomaly(e, M);
 
   // Position in 2D orbital plane
@@ -50,13 +76,13 @@ void getInitialPlanetState(CelestialBody &planet) {
   const double r = sqrt(xv * xv + yv * yv);
 
   // Heliocentric 3D cartesian coordinates
-  const double xh =
+  const double rxh =
       r * (cos(o) * cos(v + p - o) - sin(o) * sin(v + p - o) * cos(i));
-  const double yh =
+  const double ryh =
       r * (sin(o) * cos(v + p - o) + cos(o) * sin(v + p - o) * cos(i));
-  const double zh = r * (sin(v + p - o) * sin(i));
+  const double rzh = r * (sin(v + p - o) * sin(i));
 
-  planet.pos = {xh, yh, zh};
+  planet.pos = {rxh, ryh, rzh};
 
   // Calculate the gravitational parameter
   const double mu = G * (M_SUN + planet.mass);
@@ -107,22 +133,25 @@ std::vector<CelestialBody> populatePlanets() {
       planet.name = getValueFromJSONLine(line);
 
       std::getline(fileStream, line);
-      planet.semiMajorAxis = std::stod(getValueFromJSONLine(line));
+      planet.semiMajorAxis = std::stod(getValueFromJSONLine(line)) * M_PER_AU;
 
       std::getline(fileStream, line);
       planet.eccentricity = std::stod(getValueFromJSONLine(line));
 
       std::getline(fileStream, line);
-      planet.orbitalInclination = std::stod(getValueFromJSONLine(line));
+      planet.orbitalInclination =
+          toRadians(std::stod(getValueFromJSONLine(line)));
 
       std::getline(fileStream, line);
-      planet.longitudeOfAscendingNode = std::stod(getValueFromJSONLine(line));
+      planet.longitudeOfAscendingNode =
+          toRadians(std::stod(getValueFromJSONLine(line)));
 
       std::getline(fileStream, line);
-      planet.longitudeOfPerihelion = std::stod(getValueFromJSONLine(line));
+      planet.longitudeOfPerihelion =
+          toRadians(std::stod(getValueFromJSONLine(line)));
 
       std::getline(fileStream, line);
-      planet.meanAnomaly = std::stod(getValueFromJSONLine(line));
+      planet.meanAnomaly = toRadians(std::stod(getValueFromJSONLine(line)));
 
       std::getline(fileStream, line);
       planet.mass = std::stod(getValueFromJSONLine(line));
@@ -139,35 +168,4 @@ std::vector<CelestialBody> populatePlanets() {
     }
   }
   return planets;
-}
-
-
-// Numerical approximation of Eccentric Anomaly (E) using the Newton-Raphson
-// method
-double calcEccentricAnomaly(double eccentricity, double meanAnomaly) {
-  const double e = eccentricity;
-  const double M = meanAnomaly;
-  auto isConverging = [](int count) { return count < 19; };
-
-  // the inverse of the standard form of Kepler's equation
-  double E = M + e * sin(M) * (1 + e * cos(M));
-
-  double delta;
-  int iterationCount = 0;
-
-  do {
-    const double E1 = E - (E - e * sin(E) - M) / (1 - e * cos(E));
-    delta = abs(E1 - E);
-    E = E1;
-    iterationCount++;
-  } while (delta >= 0.000001 && isConverging(iterationCount));
-
-  // failsafe, should never happen with current planet selection
-  if (!isConverging(iterationCount)) {
-    std::cout << "calcEccentricAnomaly() failed. unable to converge." << '\n'
-              << "delta: " + std::to_string(delta);
-    exit(1);
-  }
-
-  return E;
 }
