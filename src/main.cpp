@@ -70,7 +70,7 @@ int main() {
   const int picHeight = 500;
   const int picCenter = picWidth / 2;
   Picture pic(picWidth, picHeight, 0, 0, 0);
-  pic.set(picCenter, picCenter, 255, 0, 0);
+  pic.set(picCenter, picCenter, 255, 255, 0);
 
   double secondsPerYear = 31536000;
   const int dt = 600; // 10-minute intervals
@@ -86,35 +86,35 @@ int main() {
     for (CelestialBody p : planets) {
       Coord pos = p.pos / M_PER_AU;
       int x = scaleValue(pos.x, 31, picCenter) + picWidth / 2;
-      int y = scaleValue(pos.y, 31, picCenter) + picHeight / 2;
+      int y = scaleValue(-pos.y, 31, picCenter) + picHeight / 2;
       pic.set(x, y, 0, 255, 0);
     }
   }
 
-  //   for (CelestialBody p : planets) {
-  //     Coord pos = p.pos / 1.496e+11;
-  //     int x = scaleValue(pos.x, 3, picCenter) + picWidth / 2;
-  //     int y = scaleValue(-pos.y, 3, picCenter) + picHeight / 2;
-  //     pic.set(x, y, 255, 0, 0);
-  //   }
-
   for (CelestialBody p : planets) {
-    double distanceInM = sqrt(p.pos.magSquared(planets.at(2).pos));
-    std::cout << p.name << ": " << distanceInM / M_PER_AU << std::endl;
+    Coord pos = p.pos / 1.496e+11;
+    int x = scaleValue(pos.x, 31, picCenter) + picWidth / 2;
+    int y = scaleValue(-pos.y, 31, picCenter) + picHeight / 2;
+    pic.set(x, y, 255, 0, 0);
   }
 
+  //   for (CelestialBody p : planets) {
+  //     double distanceInM = sqrt(p.pos.magSquared(planets.at(2).pos));
+  //     std::cout << p.name << ": " << distanceInM / M_PER_AU << std::endl;
+  //   }
 
-  //   std::cout <<
-  //   "----------------------------------------------------------\n"; std::cout
-  //   << setw(14) << "Name: " << planets.at(2).name << "\n"; Coord acc =
-  //   sumAcc(planets.at(2)); std::cout << setw(14) << "Acc [m/s/s]: ";
-  //   acc.print();
-  //   Coord pos = planets.at(2).pos / M_PER_AU;
-  //   std::cout << setw(14) << "Pos [AU]: ";
-  //   pos.print();
-  //   Coord vel = planets.at(2).vel / (M_PER_AU / S_PER_DAY);
-  //   std::cout << setw(14) << "Vel [m/s]: ";
-  //   vel.print();
+
+  std::cout << "----------------------------------------------------------\n";
+  std::cout << setw(14) << "Name: " << planets.at(2).name << "\n";
+  Coord acc = sumAcc(planets.at(2));
+  std::cout << setw(14) << "Acc [m/s/s]: ";
+  acc.print();
+  Coord pos = planets.at(2).pos / M_PER_AU;
+  std::cout << setw(14) << "Pos [AU]: ";
+  pos.print();
+  Coord vel = planets.at(2).vel / (M_PER_AU / S_PER_DAY);
+  std::cout << setw(14) << "Vel [m/s]: ";
+  vel.print();
 
 
   pic.save("result.png");
