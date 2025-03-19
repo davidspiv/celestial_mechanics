@@ -77,16 +77,16 @@ int main() {
   const int steps = secondsPerYear / dt;
 
   for (int i = 0; i < steps; i++) {
-    std::vector<CelestialBody> updatedBody;
+    std::vector<CelestialBody> updatedBodies;
     for (const auto &p : planets) {
-      updatedBody.emplace_back(rungeKuttaStep(p, dt));
+      updatedBodies.emplace_back(rungeKuttaStep(p, dt));
     }
-    planets = updatedBody;
+    planets = updatedBodies;
 
     for (CelestialBody p : planets) {
       Coord pos = p.pos / M_PER_AU;
       int x = scaleValue(pos.x, 31, picCenter) + picWidth / 2;
-      int y = scaleValue(-pos.y, 31, picCenter) + picHeight / 2;
+      int y = scaleValue(pos.y, 31, picCenter) + picHeight / 2;
       pic.set(x, y, 0, 255, 0);
     }
   }
