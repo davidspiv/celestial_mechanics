@@ -75,26 +75,19 @@ void getInitialPlanetState(CelestialBody &planet) {
   const double r = sqrt(xv * xv + yv * yv);
 
   // Heliocentric 3D cartesian coordinates
-  const double rxh =
-      r * (cos(o) * cos(v + p - o) - sin(o) * sin(v + p - o) * cos(i));
-  const double ryh =
-      r * (sin(o) * cos(v + p - o) + cos(o) * sin(v + p - o) * cos(i));
-  const double rzh = r * (sin(v + p - o) * sin(i));
+  const double xh = cos(o) * cos(v + p - o) - sin(o) * sin(v + p - o) * cos(i);
+  const double yh = sin(o) * cos(v + p - o) + cos(o) * sin(v + p - o) * cos(i);
+  const double zh = sin(v + p - o) * sin(i);
 
-  planet.pos = {rxh, ryh, rzh};
+  planet.pos = {r * xh, r * yh, r * zh};
 
   // Calculate the gravitational parameter
   const double mu = G * (M_SUN + planet.mass);
 
   // Calculate the orbital velocity magnitude (vis-viva equation)
-  const double orbitalVel = sqrt(mu * (2.0 / r - 1.0 / a));
+  const double orbitalSpeed = sqrt(mu * (2.0 / r - 1.0 / a));
 
-  // Velocity in 3D space (perpendicular to radius in the orbital plane)
-  const double vxh = sin(o) * cos(v + p - o) + cos(o) * sin(v + p - o) * cos(i);
-  const double vyh = cos(o) * cos(v + p - o) - sin(o) * sin(v + p - o) * cos(i);
-  const double vzh = sin(v + p - o) * sin(i);
-
-  planet.vel = {orbitalVel * -vxh, orbitalVel * vyh, orbitalVel * vzh};
+  planet.vel = {orbitalSpeed * -yh, orbitalSpeed * xh, orbitalSpeed * zh};
 }
 
 
@@ -163,7 +156,7 @@ std::vector<CelestialBody> populatePlanets() {
       getInitialPlanetState(planet);
       getPeriod(planet);
 
-      planets.push_back(planet);
+      planets.emplace_back(planet);
     }
   }
   return planets;
