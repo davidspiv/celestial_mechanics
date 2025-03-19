@@ -14,12 +14,11 @@ void getPeriod(CelestialBody &p) {
   p.period = (2 * M_PI * sqrt(pow(a, 3) / (G * M_SUN)));
 }
 
-
 // Calculate mass from period (if needed)
-void getMass(CelestialBody &p) {
-  const double a = p.semiMajorAxis;
-  p.mass = ((4 * M_PI * M_PI * pow(a, 3)) / (G * p.period * p.period));
-}
+// void getMass(CelestialBody &p) {
+//   const double a = p.semiMajorAxis;
+//   p.mass = ((4 * M_PI * M_PI * pow(a, 3)) / (G * p.period * p.period));
+// }
 
 // Numerical approximation of Eccentric Anomaly (E) using the Newton-Raphson
 // method
