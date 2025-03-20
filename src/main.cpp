@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cmath>
 #include <vector>
 
 #include "../include/celestialBody.h"
@@ -13,13 +14,13 @@
 int main() {
   const double julianDay = getDate();
   const int dt = 600; // 10-minute intervals
-  const int steps = SEC_PER_DAY * julianDay / dt;
+  const int steps = round(SEC_PER_DAY * julianDay / double(dt));
   vector<CelestialBody> planets = populatePlanets();
 
   const int picSideLength = 500;
   const int picCenter = picSideLength / 2;
   Picture pic(picSideLength, picSideLength, 0, 0, 0);
-  
+
   pic.set(picCenter, picCenter, 255, 255, 0);
 
   for (int i = 0; i < steps; i++) {
