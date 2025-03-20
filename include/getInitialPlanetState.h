@@ -3,13 +3,8 @@
 #include "celestialBody.h"
 #include "coord.h"
 
-void getPeriod(CelestialBody &p);
-
-// Calculate mass from period (if needed)
-void getMass(CelestialBody &p);
-
 std::vector<CelestialBody> populatePlanets();
 
-void getInitialPlanetState(CelestialBody &planet);
+void populateStateVectors(CelestialBody &planet);
 
 #endif

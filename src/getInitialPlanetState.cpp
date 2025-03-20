@@ -8,50 +8,38 @@
 #include <string>
 #include <vector>
 
-
-void getPeriod(CelestialBody &p) {
-  const double a = p.semiMajorAxis;
-  p.period = (2 * M_PI * sqrt(pow(a, 3) / (G * M_SUN)));
-}
-
-// Calculate mass from period (if needed)
-// void getMass(CelestialBody &p) {
-//   const double a = p.semiMajorAxis;
-//   p.mass = ((4 * M_PI * M_PI * pow(a, 3)) / (G * p.period * p.period));
-// }
-
-// Numerical approximation of Eccentric Anomaly (E) using the Newton-Raphson
-// method
+// returns numerical approximation of Eccentric Anomaly (E) using the
+// Newton-Raphson method
 double calcEccentricAnomaly(double eccentricity, double meanAnomaly) {
   const double e = eccentricity;
   const double M = meanAnomaly;
   auto isConverging = [](int count) { return count < 19; };
 
-  // the inverse of the standard form of Kepler's equation
+  // Kepler's equation
   double E = M + e * sin(M) * (1 + e * cos(M));
 
+  // Newton's method
   double delta;
   int iterationCount = 0;
-
   do {
     const double E1 = E - (E - e * sin(E) - M) / (1 - e * cos(E));
     delta = abs(E1 - E);
     E = E1;
     iterationCount++;
-  } while (delta >= 0.000001 && isConverging(iterationCount));
+  } while (delta >= 0.00001 && isConverging(iterationCount));
 
-  // failsafe, should never happen with current planet selection
+  // Newton's method does not work on hyperbolic orbits
   if (!isConverging(iterationCount)) {
-    std::cout << "calcEccentricAnomaly() failed. unable to converge." << '\n'
-              << "delta: " + std::to_string(delta);
-    exit(1);
+    throw std::domain_error(
+        "eccentricity too high. unable to converge\ndelta: " +
+        std::to_string(delta));
   }
 
   return E;
 }
 
-// calculates the heliocentric coordinates of the planet at the specified time
-void getInitialPlanetState(CelestialBody &planet) {
+// calculates heliocentric position and velocity vectors
+void populateStateVectors(CelestialBody &planet) {
 
   // Orbital elements normalized to J2000
   const double a = planet.semiMajorAxis;
@@ -61,7 +49,7 @@ void getInitialPlanetState(CelestialBody &planet) {
   const double i = planet.orbitalInclination;
 
   // Mean anomaly
-  const double M = planet.meanAnomaly; //
+  const double M = planet.meanAnomaly;
   const double E = calcEccentricAnomaly(e, M);
 
   // Position in 2D orbital plane
@@ -74,24 +62,27 @@ void getInitialPlanetState(CelestialBody &planet) {
   // The radius vector (r)
   const double r = sqrt(xv * xv + yv * yv);
 
+  // vector components used for both position and velocity
   const double xh = cos(o) * cos(v + p - o) - sin(o) * sin(v + p - o) * cos(i);
   const double yh = sin(o) * cos(v + p - o) + cos(o) * sin(v + p - o) * cos(i);
   const double zh = sin(v + p - o) * sin(i);
 
-    // Heliocentric 3D cartesian coordinates
+  // Heliocentric position in 3D space
   planet.pos = {r * xh, r * yh, r * zh};
 
-  // Calculate the gravitational parameter
+  // Standard gravitational parameter (mu)
   const double mu = G * (M_SUN + planet.mass);
 
-  // Calculate the orbital velocity magnitude (vis-viva equation)
+  // Vis-Viva equation
   const double orbitalSpeed = sqrt(mu * (2.0 / r - 1.0 / a));
 
+  // Heliocentric orbital velocity vector in 3D space, assuming the satellite's
+  // motion is counterclockwise
   planet.vel = {orbitalSpeed * -yh, orbitalSpeed * xh, orbitalSpeed * zh};
 }
 
 
-// returns value sans quotes regardless if its a string or a number
+// returns value as string regardless of data type
 std::string getValueFromJSONLine(std::string line) {
   const size_t startIndex = line.rfind(':', line.length() - 1) + 2;
   const size_t valueLength = line.length() - startIndex;
@@ -120,6 +111,7 @@ std::vector<CelestialBody> populatePlanets() {
   while (std::getline(fileStream, line)) {
     const int objectStart = line.find(firstKey);
 
+    // build planet
     if (objectStart > 0) {
       CelestialBody planet;
       planet.name = getValueFromJSONLine(line);
@@ -148,13 +140,7 @@ std::vector<CelestialBody> populatePlanets() {
       std::getline(fileStream, line);
       planet.mass = std::stod(getValueFromJSONLine(line));
 
-      // have to initialize all variables before passing object?
-      planet.pos = {0, 0, 0};
-      planet.vel = {0, 0, 0};
-      planet.period = 0;
-
-      getInitialPlanetState(planet);
-      getPeriod(planet);
+      populateStateVectors(planet);
 
       planets.emplace_back(planet);
     }
