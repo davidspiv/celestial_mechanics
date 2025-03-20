@@ -1,19 +1,12 @@
 #ifndef COORD_H
 #define COORD_H
 
-#include <cmath>
-#include <iomanip>
-#include <iostream>
+struct Coord {
 
-class Coord {
-public:
   Coord();
   Coord(double x, double y, double z);
 
-  Coord rCoord(const Coord &other) const;
   double magSquared(const Coord &other) const;
-  // magnitude()
-  // normalize()
 
   void print() const;
 
@@ -24,12 +17,7 @@ public:
   Coord &operator+=(const Coord &other);
   Coord operator-(const Coord &other) const;
   Coord operator/(const Coord &other) const;
-  // operator==
-  // operator!=
-  // operator-
-  // operator-=
 
-  //  private:
   double x, y, z;
 };
 

@@ -8,13 +8,6 @@ Coord::Coord() : x(0), y(0), z(0) {};
 
 Coord::Coord(double x, double y, double z) : x(x), y(y), z(z) {};
 
-Coord Coord::rCoord(const Coord &other) const {
-  const double xD = other.x - x;
-  const double yD = other.y - y;
-  const double zD = other.z - z;
-  return Coord(xD, yD, zD);
-};
-
 double Coord::magSquared(const Coord &other) const {
   const double xD = other.x - x;
   const double yD = other.y - y;

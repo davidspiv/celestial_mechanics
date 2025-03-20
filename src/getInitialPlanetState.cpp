@@ -1,5 +1,6 @@
 #include "../include/celestialBody.h"
 #include "../include/coord.h"
+#include "../include/io.h"
 #include "../include/util.h"
 
 #include <cmath>
@@ -79,23 +80,6 @@ void populateStateVectors(CelestialBody &planet) {
   // Heliocentric orbital velocity vector in 3D space, assuming the satellite's
   // motion is counterclockwise
   planet.vel = {orbitalSpeed * -yh, orbitalSpeed * xh, orbitalSpeed * zh};
-}
-
-
-// returns value as string regardless of data type
-std::string getValueFromJSONLine(std::string line) {
-  const size_t startIndex = line.rfind(':', line.length() - 1) + 2;
-  const size_t valueLength = line.length() - startIndex;
-  std::string value = line.substr(startIndex, valueLength);
-
-  // remove quotes from json string values;
-  if (line.find(": \"") == std::string::npos) {
-    return value;
-  }
-
-  // ignore trailing commas
-  const size_t endIndex = value.rfind('"') - 1;
-  return value.substr(1, endIndex);
 }
 
 // reads planets.json into a dynamically allocated array of planet structs
