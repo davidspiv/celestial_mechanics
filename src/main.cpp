@@ -23,7 +23,7 @@ Coord calcAcc(const CelestialBody &p1, const CelestialBody &p2) {
 
 
 Coord sumAcc(const CelestialBody &p) {
-  static CelestialBody sun = {"Sun", {0, 0, 0}, {0, 0, 0}, M_SUN};
+  const CelestialBody sun = {"Sun", {0, 0, 0}, {0, 0, 0}, M_SUN};
   Coord acc{0, 0, 0};
 
   acc += std::accumulate(
