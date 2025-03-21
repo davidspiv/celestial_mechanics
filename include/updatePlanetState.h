@@ -5,9 +5,11 @@
 
 #include "celestialBody.h"
 
-// Approximate new state vectors for a given interval using 4th-Order
-// Runge-Kutta. Returns updated Celestial Body
-CelestialBody rungeKuttaStep(const CelestialBody &p,
-                             const std::vector<CelestialBody> &planets, int dt);
+std::vector<CelestialBody>
+
+updateBodies(const std::vector<CelestialBody> &planets, const int dt);
+
+void drawBodies(const std::vector<CelestialBody> &planets, Picture &pic,
+                int picCenter);
 
 #endif

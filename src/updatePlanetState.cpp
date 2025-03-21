@@ -1,9 +1,11 @@
+#include <algorithm>
 #include <cmath>
 #include <numeric>
 #include <vector>
 
 #include "../include/celestialBody.h"
 #include "../include/coord.h"
+#include "../include/picture.h"
 #include "../include/util.h"
 
 // Returns heliocentric acceleration vector [m/s/s]
@@ -20,8 +22,7 @@ Coord calcAcc(const CelestialBody &p1, const CelestialBody &p2) {
 // sun, and for every planet except itself
 Coord sumAcc(const CelestialBody &p,
              const std::vector<CelestialBody> &planets) {
-  const CelestialBody sun = {"Sun", Coord(), Coord(), M_SUN};
-  const Coord acc = calcAcc(p, sun);
+  const Coord acc = Coord();
 
   return std::accumulate(
       planets.begin(), planets.end(), acc,
@@ -29,6 +30,7 @@ Coord sumAcc(const CelestialBody &p,
         return p.mass != other.mass ? totalAcc + calcAcc(p, other) : totalAcc;
       });
 };
+
 
 // Approximate new state vectors for a given interval using 4th-Order
 // Runge-Kutta. Returns updated Celestial Body
@@ -58,3 +60,26 @@ CelestialBody rungeKuttaStep(const CelestialBody &p,
 
   return updatedBody;
 }
+
+void drawBodies(const std::vector<CelestialBody> &planets, Picture &pic,
+                int picCenter) {
+  for (CelestialBody p : planets) {
+    if (p.name == "Sun")
+      continue;
+    Coord pos = p.pos / M_PER_AU;
+    int x = scaleValue(pos.x, 31, picCenter) + picCenter;
+    int y = scaleValue(-pos.y, 31, picCenter) + picCenter;
+    pic.set(x, y, 0, 255, 0);
+  }
+}
+
+std::vector<CelestialBody>
+updateBodies(const std::vector<CelestialBody> &planets, const int dt) {
+  std::vector<CelestialBody> updatedBodies;
+  std::transform(planets.begin(), planets.end(),
+                 std::back_inserter(updatedBodies),
+                 [planets, dt](const CelestialBody &p) {
+                   return rungeKuttaStep(p, planets, dt);
+                 });
+  return updatedBodies;
+};

@@ -87,6 +87,8 @@ std::string getValueFromJSONLine(std::string line) {
 // displays formatted results
 void printResults(std::vector<CelestialBody> planets) {
   for (CelestialBody p : planets) {
+    if (p.name == "Sun")
+      continue;
     std::cout << "----------------------------------\n";
     std::cout << std::setw(27) << "Name: " << p.name << "\n";
     std::cout << std::setw(27) << "Distance from Sun [AU]: ";

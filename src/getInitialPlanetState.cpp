@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 
+
 // returns numerical approximation of Eccentric Anomaly (E) using the
 // Newton-Raphson method
 double calcEccentricAnomaly(double eccentricity, double meanAnomaly) {
@@ -38,6 +39,7 @@ double calcEccentricAnomaly(double eccentricity, double meanAnomaly) {
 
   return E;
 }
+
 
 // calculates heliocentric position and velocity vectors
 void populateStateVectors(CelestialBody &planet) {
@@ -81,6 +83,7 @@ void populateStateVectors(CelestialBody &planet) {
   // motion is counterclockwise
   planet.vel = {orbitalSpeed * -yh, orbitalSpeed * xh, orbitalSpeed * zh};
 }
+
 
 // reads planets.json into a dynamically allocated array of planet structs
 std::vector<CelestialBody> populatePlanets() {
@@ -129,5 +132,9 @@ std::vector<CelestialBody> populatePlanets() {
       planets.emplace_back(planet);
     }
   }
+
+  const CelestialBody sun = {"Sun", Coord(), Coord(), M_SUN};
+  planets.emplace_back(sun);
+
   return planets;
 }
