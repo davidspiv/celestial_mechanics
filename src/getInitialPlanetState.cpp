@@ -133,7 +133,7 @@ std::vector<CelestialBody> populatePlanets() {
     }
   }
 
-  const CelestialBody sun = {"Sun", Coord(), Coord(), M_SUN};
+  const CelestialBody sun = {"sun", Coord(), Coord(), M_SUN};
   planets.emplace_back(sun);
 
   return planets;

@@ -39,46 +39,6 @@
 			"longitudeOfPerihelion": 336.04084,
 			"meanAnomaly": 19.387,
 			"mass": 6.4171e23
-		},
-		{
-			"name": "jupiter",
-			"semiMajorAxis": 5.20336301,
-			"eccentricity": 0.04839266,
-			"orbitalInclination": 1.30530,
-			"longitudeOfAscendingNode": 100.55615,
-			"longitudeOfPerihelion": 14.75385,
-			"meanAnomaly": 20.020,
-			"mass": 1.8982e27
-		},
-		{
-			"name": "saturn",
-			"semiMajorAxis": 9.53707032,
-			"eccentricity": 0.05415060,
-			"orbitalInclination": 2.48446,
-			"longitudeOfAscendingNode": 113.71504,
-			"longitudeOfPerihelion": 92.43194,
-			"meanAnomaly": 317.020,
-			"mass": 5.6834e26
-		},
-		{
-			"name": "uranus",
-			"semiMajorAxis": 19.19126393,
-			"eccentricity": 0.04716771,
-			"orbitalInclination": 0.76986,
-			"longitudeOfAscendingNode": 74.22988,
-			"longitudeOfPerihelion": 170.96424,
-			"meanAnomaly": 142.238600,
-			"mass": 8.6810e25
-		},
-		{
-			"name": "neptune",
-			"semiMajorAxis": 30.06896348,
-			"eccentricity": 0.00858587,
-			"orbitalInclination": 1.76917,
-			"longitudeOfAscendingNode": 131.72169,
-			"longitudeOfPerihelion": 44.97135,
-			"meanAnomaly": 259.883,
-			"mass": 1.02413e26
 		}
 	]
 }

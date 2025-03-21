@@ -9,6 +9,6 @@ std::vector<CelestialBody>
 updateBodies(const std::vector<CelestialBody> &planets, const int dt);
 
 void drawBodies(const std::vector<CelestialBody> &planets, Picture &pic,
-                int picCenter);
+                int picCenter, bool finalPos = false);
 
 #endif

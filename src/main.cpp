@@ -16,15 +16,17 @@ int main() {
   const int steps = round(SEC_PER_DAY * julianDay / double(dt));
   vector<CelestialBody> planets = populatePlanets();
 
-  const int picSideLength = 500;
+  const int picSideLength = 200;
   const int picCenter = picSideLength / 2;
   Picture pic(picSideLength, picSideLength, 0, 0, 0);
 
   for (int i = 0; i < steps; i++) {
     planets = updateBodies(planets, dt);
-    drawBodies(planets, pic, picCenter);
+    if (!(i % picSideLength)) {
+      drawBodies(planets, pic, picCenter);
+    }
   }
-  drawBodies(planets, pic, picCenter);
+  drawBodies(planets, pic, picCenter, true);
 
   pic.save("result.png");
   printResults(planets);

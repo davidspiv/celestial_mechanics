@@ -62,14 +62,20 @@ CelestialBody rungeKuttaStep(const CelestialBody &p,
 
 
 void drawBodies(const std::vector<CelestialBody> &planets, Picture &pic,
-                int picCenter) {
+                int picCenter, bool finalPos) {
   for (CelestialBody p : planets) {
-    if (p.name == "Sun")
-      continue;
     Coord pos = p.pos / M_PER_AU;
-    int x = scaleValue(pos.x, 31, picCenter) + picCenter;
-    int y = scaleValue(-pos.y, 31, picCenter) + picCenter;
-    pic.set(x, y, 0, 255, 0);
+    int x = scaleValue(pos.x, 2, picCenter) + picCenter;
+    int y = scaleValue(-pos.y, 2, picCenter) + picCenter;
+    if (p.name == "sun")
+      pic.set(x, y, 255, 255, 0);
+    else {
+      if (!finalPos) {
+        pic.set(x, y, 0, 255, 0);
+      } else {
+        pic.set(x, y, 255, 0, 0);
+      }
+    }
   }
 }
 
