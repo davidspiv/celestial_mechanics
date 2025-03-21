@@ -68,7 +68,7 @@ double getDate() {
 
 
 // returns value as string regardless of data type
-std::string getValueFromJSONLine(std::string line) {
+std::string getValueFromJSONLine(const std::string &line) {
   const size_t startIndex = line.rfind(':', line.length() - 1) + 2;
   const size_t valueLength = line.length() - startIndex;
   std::string value = line.substr(startIndex, valueLength);
@@ -85,7 +85,7 @@ std::string getValueFromJSONLine(std::string line) {
 
 
 // displays formatted results
-void printResults(std::vector<CelestialBody> planets) {
+void printResults(const std::vector<CelestialBody> &planets) {
   for (CelestialBody p : planets) {
     if (p.name == "Sun")
       continue;

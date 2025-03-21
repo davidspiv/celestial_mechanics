@@ -13,9 +13,9 @@ std::string getString(const std::string &prompt);
 double getDate();
 
 // displays formatted results
-void printResults(std::vector<CelestialBody> planets);
+void printResults(const std::vector<CelestialBody> &planets);
 
 // returns value as string regardless of data type
-std::string getValueFromJSONLine(std::string line);
+std::string getValueFromJSONLine(const std::string &line);
 
 #endif

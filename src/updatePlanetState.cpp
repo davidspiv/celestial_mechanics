@@ -8,6 +8,7 @@
 #include "../include/picture.h"
 #include "../include/util.h"
 
+
 // Returns heliocentric acceleration vector [m/s/s]
 Coord calcAcc(const CelestialBody &p1, const CelestialBody &p2) {
   double gravitationalFactor = G * (p1.mass + p2.mass);
@@ -32,26 +33,24 @@ Coord sumAcc(const CelestialBody &p,
 };
 
 
-// Approximate new state vectors for a given interval using 4th-Order
-// Runge-Kutta. Returns updated Celestial Body
+// Approximate new position and velocity vectors for a given interval using
+// 4th-Order Runge-Kutta. Returns updated body
 CelestialBody rungeKuttaStep(const CelestialBody &p,
                              const std::vector<CelestialBody> &planets,
                              int dt) {
   const Coord k1v = sumAcc(p, planets) * dt;
   const Coord k1r = p.vel * dt;
-  const CelestialBody k1CelestialBody{"", p.pos + k1r * 0.5, p.vel + k1v * 0.5,
-                                      p.mass};
+  const CelestialBody k1Body{"", p.pos + k1r * 0.5, p.vel + k1v * 0.5, p.mass};
 
-  const Coord k2v = sumAcc(k1CelestialBody, planets) * dt;
+  const Coord k2v = sumAcc(k1Body, planets) * dt;
   const Coord k2r = (p.vel + k1v * 0.5) * dt;
-  const CelestialBody k2CelestialBody{"", p.pos + k2r * 0.5, p.vel + k2v * 0.5,
-                                      p.mass};
+  const CelestialBody K2Body{"", p.pos + k2r * 0.5, p.vel + k2v * 0.5, p.mass};
 
-  const Coord k3v = sumAcc(k2CelestialBody, planets) * dt;
+  const Coord k3v = sumAcc(K2Body, planets) * dt;
   const Coord k3r = (p.vel + k2v * 0.5) * dt;
-  const CelestialBody k3CelestialBody{"", p.pos + k3r, p.vel + k3v, p.mass};
+  const CelestialBody K3Body{"", p.pos + k3r, p.vel + k3v, p.mass};
 
-  const Coord k4v = sumAcc(k3CelestialBody, planets) * dt;
+  const Coord k4v = sumAcc(K3Body, planets) * dt;
   const Coord k4r = (p.vel + k3v) * dt;
 
   CelestialBody updatedBody = p;
@@ -60,6 +59,7 @@ CelestialBody rungeKuttaStep(const CelestialBody &p,
 
   return updatedBody;
 }
+
 
 void drawBodies(const std::vector<CelestialBody> &planets, Picture &pic,
                 int picCenter) {
@@ -72,6 +72,7 @@ void drawBodies(const std::vector<CelestialBody> &planets, Picture &pic,
     pic.set(x, y, 0, 255, 0);
   }
 }
+
 
 std::vector<CelestialBody>
 updateBodies(const std::vector<CelestialBody> &planets, const int dt) {

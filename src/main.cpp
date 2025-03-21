@@ -10,8 +10,8 @@
 #include "../include/util.h"
 
 int main() {
-  //   const double julianDay = getDate();
-  const double julianDay = 500;
+  const double julianDay = getDate();
+  //   const double julianDay = 0;
   const int dt = 600; // 10-minute intervals
   const int steps = round(SEC_PER_DAY * julianDay / double(dt));
   vector<CelestialBody> planets = populatePlanets();
@@ -24,7 +24,6 @@ int main() {
     planets = updateBodies(planets, dt);
     drawBodies(planets, pic, picCenter);
   }
-
   drawBodies(planets, pic, picCenter);
 
   pic.save("result.png");

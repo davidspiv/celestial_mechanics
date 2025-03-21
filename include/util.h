@@ -13,10 +13,10 @@
 #define G 6.67430e-11   // Gravitational constant
 #define M_SUN 1.9891e30 // [kg]
 
-double normalizeDegrees(double x);
+double normalizeDegrees(const double x);
 
-double toRadians(double degrees);
+double toRadians(const double degrees);
 
-size_t scaleValue(double x, size_t currMax, size_t newMax);
+size_t scaleValue(const double x, const size_t currMax, const size_t newMax);
 
 #endif
