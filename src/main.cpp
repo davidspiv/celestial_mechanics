@@ -13,7 +13,7 @@
 
 int main() {
   const double julianDay = getDate();
-  //   const double julianDay = 366;
+  //   const double julianDay = 0;
   Timer timer;
   const int dt = 604800; // 1-week intervals
   const int steps = round(SEC_PER_DAY * julianDay / double(dt));
@@ -110,10 +110,10 @@ int main() {
   //   for (auto &body : bodies) {
   //     std::cout << body.name << '\n';
   //     std::cout << "POS: ";
-  //     body.pos = body.pos / M_PER_AU;
+  //     body.pos = body.pos;
   //     body.pos.print();
   //     std::cout << "VEL: ";
-  //     body.vel = body.vel / M_PER_AU * SEC_PER_DAY;
+  //     body.vel = body.vel;
   //     body.vel.print();
   //   }
   printResults(bodies);
