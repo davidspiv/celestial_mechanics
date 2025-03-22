@@ -90,8 +90,8 @@ void printResults(const std::vector<CelestialBody> &planets) {
   const Coord sunPos = planets.at(planets.size() - 1).pos;
 
   for (CelestialBody p : planets) {
-    if (p.name == "sun")
-      continue;
+    // if (p.name == "sun")
+    //   continue;
     std::cout << "----------------------------------\n";
     std::cout << std::setw(27) << "Name: " << p.name << "\n";
     std::cout << std::setw(27) << "Distance from Sun [AU]: ";

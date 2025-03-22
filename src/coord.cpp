@@ -20,7 +20,7 @@ double Coord::magSquared(const Coord &other) const {
 
 
 void Coord::print() const {
-  std::cout << std::left << std::fixed << std::setprecision(5)
+  std::cout << std::left << std::fixed << std::setprecision(9)
             << "X: " << std::setw(14) << x << "Y: " << std::setw(14) << y
             << "Z: " << std::setw(14) << z << '\n'
             << std::right;
