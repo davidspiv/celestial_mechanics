@@ -42,16 +42,16 @@ double calcEccentricAnomaly(double eccentricity, double meanAnomaly) {
 
 
 // calculates heliocentric position and velocity vectors
-void populateStateVectors(const OrbitalElements &planet, CelestialBody &body) {
+void populateStateVectors(const OrbitalElements &element, CelestialBody &body) {
   // Orbital elements normalized to J2000
-  const double a = planet.semiMajorAxis;
-  const double e = planet.eccentricity;
-  const double o = planet.longitudeOfAscendingNode;
-  const double p = planet.longitudeOfPerihelion;
-  const double i = planet.orbitalInclination;
+  const double a = element.semiMajorAxis;
+  const double e = element.eccentricity;
+  const double o = element.longitudeOfAscendingNode;
+  const double p = element.longitudeOfPerihelion;
+  const double i = element.orbitalInclination;
 
   // Mean anomaly
-  const double M = planet.meanAnomaly;
+  const double M = element.meanAnomaly;
   const double E = calcEccentricAnomaly(e, M);
 
   // Position in 2D orbital plane
@@ -84,8 +84,8 @@ void populateStateVectors(const OrbitalElements &planet, CelestialBody &body) {
 }
 
 
-// reads planets.json into a dynamically allocated array of planet structs
-void populatePlanets(std::vector<OrbitalElements> &planets,
+// reads planets.json into a parallel vectors
+void populatePlanets(std::vector<OrbitalElements> &elements,
                      std::vector<CelestialBody> &bodies) {
   const std::string firstKey = "\"name\": \"";
   std::fstream fileStream;
@@ -96,40 +96,40 @@ void populatePlanets(std::vector<OrbitalElements> &planets,
   while (std::getline(fileStream, line)) {
     const int objectStart = line.find(firstKey);
 
-    // build planet
+    // build element
     if (objectStart > 0) {
-      OrbitalElements planet;
+      OrbitalElements element;
       CelestialBody body;
 
-      planet.name = getValueFromJSONLine(line);
+      element.name = getValueFromJSONLine(line);
 
       std::getline(fileStream, line);
-      planet.semiMajorAxis = std::stod(getValueFromJSONLine(line)) * M_PER_AU;
+      element.semiMajorAxis = std::stod(getValueFromJSONLine(line)) * M_PER_AU;
 
       std::getline(fileStream, line);
-      planet.eccentricity = std::stod(getValueFromJSONLine(line));
+      element.eccentricity = std::stod(getValueFromJSONLine(line));
 
       std::getline(fileStream, line);
-      planet.orbitalInclination =
+      element.orbitalInclination =
           toRadians(std::stod(getValueFromJSONLine(line)));
 
       std::getline(fileStream, line);
-      planet.longitudeOfAscendingNode =
+      element.longitudeOfAscendingNode =
           toRadians(std::stod(getValueFromJSONLine(line)));
 
       std::getline(fileStream, line);
-      planet.longitudeOfPerihelion =
+      element.longitudeOfPerihelion =
           toRadians(std::stod(getValueFromJSONLine(line)));
 
       std::getline(fileStream, line);
-      planet.meanAnomaly = toRadians(std::stod(getValueFromJSONLine(line)));
+      element.meanAnomaly = toRadians(std::stod(getValueFromJSONLine(line)));
 
       std::getline(fileStream, line);
       body.mass = std::stod(getValueFromJSONLine(line));
 
-      populateStateVectors(planet, body);
+      populateStateVectors(element, body);
 
-      planets.emplace_back(planet);
+      elements.emplace_back(element);
       bodies.emplace_back(body);
     }
   }
@@ -140,9 +140,9 @@ void populatePlanets(std::vector<OrbitalElements> &planets,
 
 
 // approximates system size, assumes eccentricity is low
-size_t approxSystemSize(const std::vector<OrbitalElements> &planets) {
+size_t approxSystemSize(const std::vector<OrbitalElements> &elements) {
   double systemSize = 0.0;
-  for (auto p : planets) {
+  for (auto p : elements) {
     if (p.semiMajorAxis > systemSize) {
       systemSize = p.semiMajorAxis;
     }

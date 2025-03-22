@@ -12,16 +12,16 @@
 
 
 int main() {
-  const double julianDay = getDate();
-  //   const double julianDay = 366;
+//   const double julianDay = getDate();
+    const double julianDay = 366;
   Timer timer;
   const int dt = 600; // 10-minute intervals
   const int steps = round(SEC_PER_DAY * julianDay / double(dt));
-  std::vector<OrbitalElements> planets;
+  std::vector<OrbitalElements> elements;
   std::vector<CelestialBody> bodies;
 
-  populatePlanets(planets, bodies);
-  const size_t systemSize = approxSystemSize(planets);
+  populatePlanets(elements, bodies);
+  const size_t systemSize = approxSystemSize(elements);
 
   const int picSideLength = 500;
   Picture pic(picSideLength, picSideLength, 0, 0, 0);
