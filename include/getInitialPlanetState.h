@@ -1,8 +1,10 @@
 #ifndef PLANET_STATE_H
 #define PLANET_STATE_H
+
+#include <vector>
+
 #include "celestialBody.h"
 #include "coord.h"
-
 
 // calculates heliocentric position and velocity vectors
 void populateStateVectors(const OrbitalElements &element, CelestialBody &body,

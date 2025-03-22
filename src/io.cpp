@@ -1,5 +1,6 @@
 #include "../include/celestialBody.h"
 #include "../include/date.h"
+#include "../include/getInitialPlanetState.h"
 #include "../include/util.h"
 
 #include <cmath>
@@ -92,7 +93,8 @@ void printResults(const std::vector<CelestialBody> &planets) {
   for (CelestialBody p : planets) {
     // if (p.name == "sun")
     //   continue;
-    std::cout << "----------------------------------\n";
+    std::cout << "----------------------------------\n"
+              << std::fixed << std::setprecision(2);
     std::cout << std::setw(27) << "Name: " << p.name << "\n";
     std::cout << std::setw(27) << "Distance from Sun [AU]: ";
     std::cout << sqrt(p.pos.magSquared(sunPos)) / M_PER_AU << std::endl;
@@ -103,12 +105,14 @@ void printResults(const std::vector<CelestialBody> &planets) {
   }
 }
 
-void printTest(const std::vector<CelestialBody> &bodies,
-                  const std::vector<CelestialBody> &solutionBodies) {
-  std::cout << "ERROR [%]" << '\n';
+void printTest(const std::vector<CelestialBody> &bodies) {
+  std::vector<CelestialBody> solutionBodies;
+  populateSolutions(solutionBodies);
+
+  std::cout << "ERROR %\n\n";
   CelestialBody sun = bodies.at(bodies.size() - 1);
   for (size_t i = 0; i < bodies.size() - 1; i++) {
-    std::cout << "NAME: " << bodies[i].name << '\n';
+    std::cout << std::setw(7) << "NAME: " << bodies[i].name << '\n';
     double posObserved = bodies[i].pos.magSquared(sun.pos);
     double posExpected = solutionBodies[i].pos.magSquared(sun.pos);
     double velObserved = bodies[i].vel.magSquared(Coord());
@@ -117,7 +121,7 @@ void printTest(const std::vector<CelestialBody> &bodies,
     double posError = (posObserved - posExpected) / posExpected * 100.0;
     double velError = (velObserved - velExpected) / velExpected * 100.0;
 
-    std::cout << "POS: " << posError << '\n';
-    std::cout << "VEL: " << velError << "\n\n";
+    std::cout << std::setw(7) << "POS: " << posError << '\n';
+    std::cout << std::setw(7) << "VEL: " << velError << "\n\n";
   }
 }
