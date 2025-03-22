@@ -102,3 +102,22 @@ void printResults(const std::vector<CelestialBody> &planets) {
     std::cout << sqrt(p.vel.magSquared(Coord())) / M_PER_KM << std::endl;
   }
 }
+
+void printTest(const std::vector<CelestialBody> &bodies,
+                  const std::vector<CelestialBody> &solutionBodies) {
+  std::cout << "ERROR [%]" << '\n';
+  CelestialBody sun = bodies.at(bodies.size() - 1);
+  for (size_t i = 0; i < bodies.size() - 1; i++) {
+    std::cout << "NAME: " << bodies[i].name << '\n';
+    double posObserved = bodies[i].pos.magSquared(sun.pos);
+    double posExpected = solutionBodies[i].pos.magSquared(sun.pos);
+    double velObserved = bodies[i].vel.magSquared(Coord());
+    double velExpected = solutionBodies[i].vel.magSquared(Coord());
+
+    double posError = (posObserved - posExpected) / posExpected * 100.0;
+    double velError = (velObserved - velExpected) / velExpected * 100.0;
+
+    std::cout << "POS: " << posError << '\n';
+    std::cout << "VEL: " << velError << "\n\n";
+  }
+}
