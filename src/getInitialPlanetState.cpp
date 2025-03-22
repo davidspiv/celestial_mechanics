@@ -40,9 +40,29 @@ double calcEccentricAnomaly(double eccentricity, double meanAnomaly) {
   return E;
 }
 
+double calcPeriod(const OrbitalElements &element, const CelestialBody &body) {
+  const double proportionalityConstant =
+      (4 * pow(M_PI, 2)) / (G * (body.mass + M_SUN));
+
+  return sqrt(proportionalityConstant * pow(element.semiMajorAxis, 3));
+}
+
+double getNormalizedMeanAnomaly(const OrbitalElements &element,
+                                const double period, double daysSinceEpoch) {
+  const double meanMotion = (2 * M_PI) / period; // Radians per day
+  return normalizeRadians(element.meanAnomaly + meanMotion * daysSinceEpoch);
+}
+
 
 // calculates heliocentric position and velocity vectors
-void populateStateVectors(const OrbitalElements &element, CelestialBody &body) {
+void populateStateVectors(const OrbitalElements &element, CelestialBody &body,
+                          float daysSinceEpoch) {
+
+  double period = calcPeriod(element, body);
+
+  const double normalizedMeanAnomaly =
+      getNormalizedMeanAnomaly(element, period, daysSinceEpoch);
+
   // Orbital elements normalized to J2000
   const double a = element.semiMajorAxis;
   const double e = element.eccentricity;
@@ -50,8 +70,7 @@ void populateStateVectors(const OrbitalElements &element, CelestialBody &body) {
   const double p = element.longitudeOfPerihelion;
   const double i = element.orbitalInclination;
 
-  // Mean anomaly
-  const double M = element.meanAnomaly;
+  const double M = normalizedMeanAnomaly;
   const double E = calcEccentricAnomaly(e, M);
 
   // Position in 2D orbital plane
@@ -127,8 +146,6 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
 
       std::getline(fileStream, line);
       body.mass = std::stod(getValueFromJSONLine(line));
-
-      populateStateVectors(element, body);
 
       elements.emplace_back(element);
       bodies.emplace_back(body);

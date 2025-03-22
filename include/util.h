@@ -13,7 +13,7 @@
 #define G 6.67430e-11   // Gravitational constant
 #define M_SUN 1.9891e30 // [kg]
 
-double normalizeDegrees(const double x);
+double normalizeRadians(const double x);
 
 double toRadians(const double degrees);
 

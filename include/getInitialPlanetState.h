@@ -4,6 +4,10 @@
 #include "coord.h"
 
 
+// calculates heliocentric position and velocity vectors
+void populateStateVectors(const OrbitalElements &element, CelestialBody &body,
+                          float daysSinceEpoch);
+
 // reads planets.json into a parallel vectors
 void populatePlanets(std::vector<OrbitalElements> &elements,
                      std::vector<CelestialBody> &bodies);

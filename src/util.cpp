@@ -2,7 +2,10 @@
 #include <iostream>
 
 // converts degrees to a value between 0 and 360
-double normalizeDegrees(const double x) { return x - floor(x / 360.0) * 360.0; }
+double normalizeRadians(const double x) {
+  const double twoPi = 2.0 * M_PI;
+  return x - floor(x / twoPi) * twoPi;
+}
 
 
 // converts degrees to radians
