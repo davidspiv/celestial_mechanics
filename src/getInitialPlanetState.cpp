@@ -5,10 +5,11 @@
 
 #include <cmath>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
-
 
 // returns numerical approximation of Eccentric Anomaly (E) using the
 // Newton-Raphson method
@@ -106,7 +107,7 @@ void populateStateVectors(const OrbitalElements &element, CelestialBody &body,
 // reads planets.json into a parallel vectors
 void populatePlanets(std::vector<OrbitalElements> &elements,
                      std::vector<CelestialBody> &bodies) {
-  const std::string firstKey = "\"name\": \"";
+  const std::string bodyStartKey = "\"name\": \"";
   std::fstream fileStream;
   std::string line;
   int numBodies = 1; // include sun
@@ -114,7 +115,7 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
   fileStream.open("planets.json");
 
   while (std::getline(fileStream, line)) {
-    const size_t objectStart = line.find(firstKey);
+    const size_t objectStart = line.find(bodyStartKey);
 
     if (objectStart == std::string::npos)
       continue;
@@ -164,15 +165,33 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
 }
 
 
-void populateSolutions(std::vector<CelestialBody> &bodies) {
-  const std::string firstKey = "\"name\": \"";
+void populateSolutions(std::vector<CelestialBody> &bodies,
+                       const double julianDay) {
+
+  const double normalizedJD = julianDay + 2451544.5;
+  const bool isHalfDay = normalizedJD - static_cast<int>(normalizedJD) == 0.5;
+  std::ostringstream ss;
+
+  ss << "JD" << std::fixed << std::setprecision((isHalfDay ? 1 : 0))
+     << normalizedJD;
+
+  const std::string dataStartKey = ss.str();
+  const std::string bodyStartKey = "\"name\": \"";
   std::fstream fileStream;
   std::string line;
   int numBodies = 0;
 
   fileStream.open("solutions.json");
+
+  //get to correct data
   while (std::getline(fileStream, line)) {
-    const size_t objectStart = line.find(firstKey);
+    const size_t dataStart = line.find(dataStartKey);
+    if (dataStart != std::string::npos)
+      break;
+  }
+
+  while (std::getline(fileStream, line)) {
+    const size_t objectStart = line.find(bodyStartKey);
 
     if (objectStart == std::string::npos)
       continue;

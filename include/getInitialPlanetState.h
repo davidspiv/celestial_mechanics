@@ -15,8 +15,8 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
                      std::vector<CelestialBody> &bodies);
 
 
-void populateSolutions(std::vector<CelestialBody> &bodies);
-
+void populateSolutions(std::vector<CelestialBody> &bodies,
+                       const double julianDay);
 
 // calculates heliocentric position and velocity vectors
 void populateStateVectors(const OrbitalElements &element, CelestialBody &body);

@@ -110,7 +110,7 @@ void printResults(const std::vector<CelestialBody> &planets) {
 void printTest(const std::vector<CelestialBody> &bodies,
                const double julianDay) {
   std::vector<CelestialBody> solutionBodies;
-  populateSolutions(solutionBodies);
+  populateSolutions(solutionBodies, julianDay);
 
   std::cout << "ERROR %\n\n";
   CelestialBody sun = bodies.at(bodies.size() - 1);
