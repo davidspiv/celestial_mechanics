@@ -39,23 +39,22 @@ int main() {
     populateStateVectors(elements[i], bodies[i], 0);
   }
 
-  std::vector<CelestialBody> bodiesToApprox(bodies.begin(),
+  std::vector<CelestialBody> for1BodyApprox(bodies.begin(),
                                             bodies.begin() + oneBodyCutoff);
-  std::vector<CelestialBody> bodiesToIntegrate(bodies.begin() + oneBodyCutoff,
-                                               bodies.end());
+  std::vector<CelestialBody> forNBodyApprox(bodies.begin() + oneBodyCutoff,
+                                            bodies.end());
 
   for (int i = 0; i < steps; i++) {
-    updateBodies(bodiesToIntegrate, dt);
+    updateBodies(forNBodyApprox, dt);
 
     // end up rendering a lot of the same pixels, but checking is slower?
     // drawBodies(bodies, pic, systemSize);
   }
 
   bodies.clear();
-  bodies.reserve(bodiesToApprox.size() + bodiesToIntegrate.size());
-  bodies.insert(bodies.end(), bodiesToApprox.begin(), bodiesToApprox.end());
-  bodies.insert(bodies.end(), bodiesToIntegrate.begin(),
-                bodiesToIntegrate.end());
+  bodies.reserve(for1BodyApprox.size() + forNBodyApprox.size());
+  bodies.insert(bodies.end(), for1BodyApprox.begin(), for1BodyApprox.end());
+  bodies.insert(bodies.end(), forNBodyApprox.begin(), forNBodyApprox.end());
 
   drawBodies(bodies, pic, systemSize, true);
 
