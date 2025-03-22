@@ -114,45 +114,47 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
   fileStream.open("planets.json");
 
   while (std::getline(fileStream, line)) {
-    const int objectStart = line.find(firstKey);
+    const size_t objectStart = line.find(firstKey);
+
+    if (objectStart == std::string::npos)
+      continue;
 
     // build element
-    if (objectStart > 0) {
-      OrbitalElements element;
-      CelestialBody body;
+    OrbitalElements element;
+    CelestialBody body;
 
-      body.name = getValueFromJSONLine(line);
+    body.name = getValueFromJSONLine(line);
 
-      std::getline(fileStream, line);
-      element.semiMajorAxis = std::stod(getValueFromJSONLine(line)) * M_PER_AU;
+    std::getline(fileStream, line);
+    element.semiMajorAxis = std::stod(getValueFromJSONLine(line)) * M_PER_AU;
 
-      std::getline(fileStream, line);
-      element.eccentricity = std::stod(getValueFromJSONLine(line));
+    std::getline(fileStream, line);
+    element.eccentricity = std::stod(getValueFromJSONLine(line));
 
-      std::getline(fileStream, line);
-      element.orbitalInclination =
-          toRadians(std::stod(getValueFromJSONLine(line)));
+    std::getline(fileStream, line);
+    element.orbitalInclination =
+        toRadians(std::stod(getValueFromJSONLine(line)));
 
-      std::getline(fileStream, line);
-      element.longitudeOfAscendingNode =
-          toRadians(std::stod(getValueFromJSONLine(line)));
+    std::getline(fileStream, line);
+    element.longitudeOfAscendingNode =
+        toRadians(std::stod(getValueFromJSONLine(line)));
 
-      std::getline(fileStream, line);
-      element.longitudeOfPerihelion =
-          toRadians(std::stod(getValueFromJSONLine(line)));
+    std::getline(fileStream, line);
+    element.longitudeOfPerihelion =
+        toRadians(std::stod(getValueFromJSONLine(line)));
 
-      std::getline(fileStream, line);
-      element.meanAnomaly = toRadians(std::stod(getValueFromJSONLine(line)));
+    std::getline(fileStream, line);
+    element.meanAnomaly = toRadians(std::stod(getValueFromJSONLine(line)));
 
-      std::getline(fileStream, line);
-      body.mass = std::stod(getValueFromJSONLine(line));
+    std::getline(fileStream, line);
+    body.mass = std::stod(getValueFromJSONLine(line));
 
-      elements.emplace_back(element);
-      bodies.emplace_back(body);
+    elements.emplace_back(element);
+    bodies.emplace_back(body);
 
-      numBodies++;
-    }
+    numBodies++;
   }
+
 
   const CelestialBody sun = {"sun", Coord(), Coord(), M_SUN};
   bodies.emplace_back(sun);
@@ -163,50 +165,51 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
 
 
 void populateSolutions(std::vector<CelestialBody> &bodies) {
-	const std::string firstKey = "\"name\": \"";
-	std::fstream fileStream;
-	std::string line;
-	int numBodies = 0;
+  const std::string firstKey = "\"name\": \"";
+  std::fstream fileStream;
+  std::string line;
+  int numBodies = 0;
 
-	fileStream.open("solutions.json");
-	while (std::getline(fileStream, line)) {
-	  const int objectStart = line.find(firstKey);
+  fileStream.open("solutions.json");
+  while (std::getline(fileStream, line)) {
+    const size_t objectStart = line.find(firstKey);
 
-	  // build element
-	  if (objectStart > 0) {
-		CelestialBody body;
+    if (objectStart == std::string::npos)
+      continue;
 
-		body.name = getValueFromJSONLine(line);
+    // build element
+    CelestialBody body;
 
-		std::getline(fileStream, line);
-		std::getline(fileStream, line);
-		body.pos.x = std::stod(getValueFromJSONLine(line)) * M_PER_KM;
-		std::getline(fileStream, line);
-		body.pos.y = std::stod(getValueFromJSONLine(line)) * M_PER_KM;
-		std::getline(fileStream, line);
-		body.pos.z = std::stod(getValueFromJSONLine(line)) * M_PER_KM;
+    body.name = getValueFromJSONLine(line);
 
-		std::getline(fileStream, line);
-		std::getline(fileStream, line);
-		std::getline(fileStream, line);
-		body.vel.x = std::stod(getValueFromJSONLine(line)) * M_PER_KM;
-		std::getline(fileStream, line);
-		body.vel.y = std::stod(getValueFromJSONLine(line)) * M_PER_KM;
-		std::getline(fileStream, line);
-		body.vel.z = std::stod(getValueFromJSONLine(line)) * M_PER_KM;
+    std::getline(fileStream, line);
+    std::getline(fileStream, line);
+    body.pos.x = std::stod(getValueFromJSONLine(line)) * M_PER_KM;
+    std::getline(fileStream, line);
+    body.pos.y = std::stod(getValueFromJSONLine(line)) * M_PER_KM;
+    std::getline(fileStream, line);
+    body.pos.z = std::stod(getValueFromJSONLine(line)) * M_PER_KM;
 
-		std::getline(fileStream, line);
-		std::getline(fileStream, line);
-		body.mass = std::stod(getValueFromJSONLine(line));
+    std::getline(fileStream, line);
+    std::getline(fileStream, line);
+    std::getline(fileStream, line);
+    body.vel.x = std::stod(getValueFromJSONLine(line)) * M_PER_KM;
+    std::getline(fileStream, line);
+    body.vel.y = std::stod(getValueFromJSONLine(line)) * M_PER_KM;
+    std::getline(fileStream, line);
+    body.vel.z = std::stod(getValueFromJSONLine(line)) * M_PER_KM;
 
-		bodies.emplace_back(body);
+    std::getline(fileStream, line);
+    std::getline(fileStream, line);
+    body.mass = std::stod(getValueFromJSONLine(line));
 
-		numBodies++;
-	  }
-	}
+    bodies.emplace_back(body);
 
-	bodies.resize(numBodies);
+    numBodies++;
   }
+
+  bodies.resize(numBodies);
+}
 
 
 // approximates system size, assumes eccentricity is low

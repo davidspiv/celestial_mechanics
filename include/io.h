@@ -19,6 +19,7 @@ std::string getValueFromJSONLine(const std::string &line);
 void printResults(const std::vector<CelestialBody> &planets);
 
 
-void printTest(const std::vector<CelestialBody> &bodies);
+void printTest(const std::vector<CelestialBody> &bodies,
+               const double julianDay);
 
 #endif

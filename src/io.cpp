@@ -93,8 +93,8 @@ void printResults(const std::vector<CelestialBody> &planets) {
   for (CelestialBody p : planets) {
     // if (p.name == "sun")
     //   continue;
-    std::cout << "----------------------------------\n"
-              << std::fixed << std::setprecision(2);
+    std::cout << "----------------------------------\n";
+    std::cout << std::fixed << std::setprecision(2);
     std::cout << std::setw(27) << "Name: " << p.name << "\n";
     std::cout << std::setw(27) << "Distance from Sun [AU]: ";
     std::cout << sqrt(p.pos.magSquared(sunPos)) / M_PER_AU << std::endl;
@@ -105,7 +105,10 @@ void printResults(const std::vector<CelestialBody> &planets) {
   }
 }
 
-void printTest(const std::vector<CelestialBody> &bodies) {
+
+// gets answers from solutions.json and display formatted comparison
+void printTest(const std::vector<CelestialBody> &bodies,
+               const double julianDay) {
   std::vector<CelestialBody> solutionBodies;
   populateSolutions(solutionBodies);
 
