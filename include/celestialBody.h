@@ -12,7 +12,6 @@ struct CelestialBody {
 };
 
 struct OrbitalElements {
-  std::string name;
   double semiMajorAxis;
   double eccentricity;
   double orbitalInclination;

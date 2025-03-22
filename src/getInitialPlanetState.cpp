@@ -101,7 +101,7 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
       OrbitalElements element;
       CelestialBody body;
 
-      element.name = getValueFromJSONLine(line);
+      body.name = getValueFromJSONLine(line);
 
       std::getline(fileStream, line);
       element.semiMajorAxis = std::stod(getValueFromJSONLine(line)) * M_PER_AU;
