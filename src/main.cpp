@@ -12,16 +12,15 @@
 
 
 int main() {
-  const double julianDay = getDate();
-  //   const double julianDay = 0;
+  //   const double julianDay = getDate();
+  const double julianDay = 0;
   Timer timer;
-  const int dt = 604800; // 1-week intervals
-  const int steps = round(SEC_PER_DAY * julianDay / double(dt));
+  //   const int dt = 604800; // 1-week intervals
+  //   const int steps = round(SEC_PER_DAY * julianDay / double(dt));
 
   const int picSideLength = 500;
   Picture pic(picSideLength, picSideLength, 0, 0, 0);
 
-  size_t oneBodyCutoff = 2;
   // parallel vectors to represent planets
   std::vector<OrbitalElements> elements;
   std::vector<CelestialBody> bodies;
@@ -31,30 +30,17 @@ int main() {
   const size_t systemSize = approxSystemSize(elements);
 
 
-  for (size_t i = 0; i < oneBodyCutoff; i++) {
+  for (size_t i = 0; i < bodies.size() - 1; i++) {
     populateStateVectors(elements[i], bodies[i], julianDay);
   }
 
-  for (size_t i = oneBodyCutoff; i < elements.size(); i++) {
-    populateStateVectors(elements[i], bodies[i], 0);
-  }
 
-  std::vector<CelestialBody> for1BodyApprox(bodies.begin(),
-                                            bodies.begin() + oneBodyCutoff);
-  std::vector<CelestialBody> forNBodyApprox(bodies.begin() + oneBodyCutoff,
-                                            bodies.end());
+  //   for (int i = 0; i < steps; i++) {
+  //     updateBodies(bodies, dt);
 
-  for (int i = 0; i < steps; i++) {
-    updateBodies(forNBodyApprox, dt);
-
-    // end up rendering a lot of the same pixels, but checking is slower?
-    // drawBodies(bodies, pic, systemSize);
-  }
-
-  bodies.clear();
-  bodies.reserve(for1BodyApprox.size() + forNBodyApprox.size());
-  bodies.insert(bodies.end(), for1BodyApprox.begin(), for1BodyApprox.end());
-  bodies.insert(bodies.end(), forNBodyApprox.begin(), forNBodyApprox.end());
+  //     // end up rendering a lot of the same pixels, but checking is slower?
+  //     drawBodies(bodies, pic, systemSize);
+  //   }
 
   drawBodies(bodies, pic, systemSize, true);
 
