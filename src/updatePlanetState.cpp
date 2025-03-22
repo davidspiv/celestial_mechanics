@@ -27,17 +27,16 @@ void calcAcc(const CelestialBody &p1, const CelestialBody &p2, Coord &acc1,
 Coord sumAcc(const CelestialBody &p, size_t pIndex,
              const std::vector<CelestialBody> &planets) {
 
-  static std::vector<Coord> accBuffer(planets.size(), Coord());
-  Coord acc = Coord();
+  static std::vector<Coord> accumulatedAcc(planets.size(), Coord());
+  Coord netAcc = Coord();
 
-  for (size_t i = pIndex; i < planets.size(); i++) {
-    if (i != pIndex) {
-      calcAcc(p, planets[i], acc, accBuffer[i]);
-    }
+  for (size_t i = pIndex + 1; i < planets.size(); i++) {
+    calcAcc(p, planets[i], netAcc, accumulatedAcc[i]);
   }
 
-  return acc;
+  return netAcc;
 }
+
 
 // Approximate new position and velocity vectors for a given interval using
 // 4th-Order Runge-Kutta. Returns updated body
@@ -45,6 +44,7 @@ CelestialBody rungeKuttaStep(size_t pIndex,
                              const std::vector<CelestialBody> &planets,
                              int dt) {
 
+  const static double sixth = 1 / 6.0;
   CelestialBody p = planets[pIndex];
 
   const Coord k1v = sumAcc(p, pIndex, planets) * dt;
@@ -62,8 +62,8 @@ CelestialBody rungeKuttaStep(size_t pIndex,
   const Coord k4v = sumAcc(K3Body, pIndex, planets) * dt;
   const Coord k4r = (p.vel + k3v) * dt;
 
-  p.vel += (k1v + k2v * 2.0 + k3v * 2.0 + k4v) * (1 / 6.0);
-  p.pos += (k1r + k2r * 2.0 + k3r * 2.0 + k4r) * (1 / 6.0);
+  p.vel += (k1v + k2v * 2.0 + k3v * 2.0 + k4v) * sixth;
+  p.pos += (k1r + k2r * 2.0 + k3r * 2.0 + k4r) * sixth;
 
   return p;
 }
@@ -103,7 +103,7 @@ updateBodies(const std::vector<CelestialBody> &planets, const int dt) {
   std::vector<CelestialBody> updatedBodies;
 
   for (size_t i = 0; i < planets.size(); i++) {
-    updatedBodies.push_back(rungeKuttaStep(i, planets, dt));
+    updatedBodies.emplace_back(rungeKuttaStep(i, planets, dt));
   }
 
   return updatedBodies;
