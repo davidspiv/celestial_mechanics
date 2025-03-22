@@ -110,10 +110,10 @@ int main() {
   //   for (auto &body : bodies) {
   //     std::cout << body.name << '\n';
   //     std::cout << "POS: ";
-  //     body.pos = body.pos;
+  //     body.pos = body.pos / 1000;
   //     body.pos.print();
   //     std::cout << "VEL: ";
-  //     body.vel = body.vel;
+  //     body.vel = body.vel / 1000;
   //     body.vel.print();
   //   }
   printResults(bodies);
