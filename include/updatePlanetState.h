@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "celestialBody.h"
+#include "picture.h"
 
 std::vector<CelestialBody>
 updateBodies(const std::vector<CelestialBody> &planets, const int dt);

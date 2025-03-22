@@ -1,4 +1,6 @@
 // https://www.youtube.com/watch?v=YG4jexlSAjc&t=711s
+#ifndef TIMER_H
+#define TIMER_H
 
 #include <chrono>
 #include <iostream>
@@ -27,3 +29,5 @@ public:
     cout << "duration (ms): " << ms << endl;
   }
 };
+
+#endif

@@ -12,19 +12,21 @@
 
 
 int main() {
-//   const double julianDay = getDate();
-    const double julianDay = 366;
+  //   const double julianDay = getDate();
+  const double julianDay = 366;
   Timer timer;
-  const int dt = 600; // 10-minute intervals
+  const int dt = 600; // 10-minute intervalsresize
   const int steps = round(SEC_PER_DAY * julianDay / double(dt));
-  std::vector<OrbitalElements> elements;
-  std::vector<CelestialBody> bodies;
-
-  populatePlanets(elements, bodies);
-  const size_t systemSize = approxSystemSize(elements);
 
   const int picSideLength = 500;
   Picture pic(picSideLength, picSideLength, 0, 0, 0);
+
+  // parallel vectors to represent planets
+  std::vector<OrbitalElements> elements;
+  std::vector<CelestialBody> bodies;
+  populatePlanets(elements, bodies);
+
+  const size_t systemSize = approxSystemSize(elements);
 
   for (int i = 0; i < steps; i++) {
     bodies = updateBodies(bodies, dt);
