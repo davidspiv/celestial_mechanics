@@ -90,7 +90,7 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
   const std::string firstKey = "\"name\": \"";
   std::fstream fileStream;
   std::string line;
-  int numPlanets = 0;
+  int numPlanets = 1;
 
   fileStream.open("planets.json");
 
