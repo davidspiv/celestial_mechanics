@@ -9,7 +9,10 @@ struct CelestialBody {
   Coord pos;
   Coord vel;
   double mass;
+};
 
+struct OrbitalElements {
+  std::string name;
   double semiMajorAxis;
   double eccentricity;
   double orbitalInclination;

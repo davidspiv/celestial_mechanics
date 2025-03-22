@@ -70,21 +70,12 @@ CelestialBody rungeKuttaStep(size_t pIndex,
 
 
 void drawBodies(const std::vector<CelestialBody> &planets, Picture &pic,
-                int picCenter, bool finalPos) {
-
-  // approximates system size, assumes eccentricity is low!
-  double systemSize = 0.0;
-  for (auto p : planets) {
-    if (p.semiMajorAxis > systemSize) {
-      systemSize = p.semiMajorAxis;
-    }
-  }
-  systemSize = size_t(std::ceil(systemSize / M_PER_AU));
+                size_t systemSize, bool finalPos) {
 
   for (CelestialBody p : planets) {
     Coord pos = p.pos / M_PER_AU;
-    int x = scaleValue(pos.x, systemSize, picCenter) + picCenter;
-    int y = scaleValue(-pos.y, systemSize, picCenter) + picCenter;
+    int x = scaleValue(pos.x, systemSize, pic.width() / 2) + pic.width() / 2;
+    int y = scaleValue(-pos.y, systemSize, pic.width() / 2) + pic.width() / 2;
     if (p.name == "sun")
       pic.set(x, y, 255, 255, 0);
     else {

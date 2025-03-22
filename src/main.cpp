@@ -10,26 +10,30 @@
 #include "../include/updatePlanetState.h"
 #include "../include/util.h"
 
+
 int main() {
   const double julianDay = getDate();
   //   const double julianDay = 366;
   Timer timer;
   const int dt = 600; // 10-minute intervals
   const int steps = round(SEC_PER_DAY * julianDay / double(dt));
-  vector<CelestialBody> planets = populatePlanets();
+  std::vector<OrbitalElements> planets;
+  std::vector<CelestialBody> bodies;
+
+  populatePlanets(planets, bodies);
+  const size_t systemSize = approxSystemSize(planets);
 
   const int picSideLength = 500;
-  const int picCenter = picSideLength / 2;
   Picture pic(picSideLength, picSideLength, 0, 0, 0);
 
   for (int i = 0; i < steps; i++) {
-    planets = updateBodies(planets, dt);
+    bodies = updateBodies(bodies, dt);
 
     // end up rendering a lot of the same pixels, but checking is slower?
-    drawBodies(planets, pic, picCenter);
+    drawBodies(bodies, pic, systemSize);
   }
-  drawBodies(planets, pic, picCenter, true);
+  drawBodies(bodies, pic, systemSize, true);
 
   pic.save("result.png");
-  printResults(planets);
+  printResults(bodies);
 }

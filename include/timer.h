@@ -3,8 +3,6 @@
 #include <chrono>
 #include <iostream>
 
-using namespace std;
-
 class Timer {
 private:
   chrono::time_point<chrono::high_resolution_clock> m_StartTimepoint =

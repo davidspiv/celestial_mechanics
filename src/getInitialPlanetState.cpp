@@ -42,8 +42,7 @@ double calcEccentricAnomaly(double eccentricity, double meanAnomaly) {
 
 
 // calculates heliocentric position and velocity vectors
-void populateStateVectors(CelestialBody &planet) {
-
+void populateStateVectors(const OrbitalElements &planet, CelestialBody &body) {
   // Orbital elements normalized to J2000
   const double a = planet.semiMajorAxis;
   const double e = planet.eccentricity;
@@ -71,27 +70,26 @@ void populateStateVectors(CelestialBody &planet) {
   const double zh = sin(v + p - o) * sin(i);
 
   // Heliocentric position in 3D space
-  planet.pos = {r * xh, r * yh, r * zh};
+  body.pos = {r * xh, r * yh, r * zh};
 
   // Standard gravitational parameter (mu)
-  const double mu = G * (M_SUN + planet.mass);
+  const double mu = G * (M_SUN + body.mass);
 
   // Vis-Viva equation
   const double orbitalSpeed = sqrt(mu * (2.0 / r - 1.0 / a));
 
   // Heliocentric orbital velocity vector in 3D space, assuming the satellite's
   // motion is counterclockwise
-  planet.vel = {orbitalSpeed * -yh, orbitalSpeed * xh, orbitalSpeed * zh};
+  body.vel = {orbitalSpeed * -yh, orbitalSpeed * xh, orbitalSpeed * zh};
 }
 
 
 // reads planets.json into a dynamically allocated array of planet structs
-std::vector<CelestialBody> populatePlanets() {
+void populatePlanets(std::vector<OrbitalElements> &planets,
+                     std::vector<CelestialBody> &bodies) {
   const std::string firstKey = "\"name\": \"";
   std::fstream fileStream;
   std::string line;
-
-  std::vector<CelestialBody> planets;
 
   fileStream.open("planets.json");
 
@@ -100,7 +98,9 @@ std::vector<CelestialBody> populatePlanets() {
 
     // build planet
     if (objectStart > 0) {
-      CelestialBody planet;
+      OrbitalElements planet;
+      CelestialBody body;
+
       planet.name = getValueFromJSONLine(line);
 
       std::getline(fileStream, line);
@@ -125,16 +125,27 @@ std::vector<CelestialBody> populatePlanets() {
       planet.meanAnomaly = toRadians(std::stod(getValueFromJSONLine(line)));
 
       std::getline(fileStream, line);
-      planet.mass = std::stod(getValueFromJSONLine(line));
+      body.mass = std::stod(getValueFromJSONLine(line));
 
-      populateStateVectors(planet);
+      populateStateVectors(planet, body);
 
       planets.emplace_back(planet);
+      bodies.emplace_back(body);
     }
   }
 
   const CelestialBody sun = {"sun", Coord(), Coord(), M_SUN};
-  planets.emplace_back(sun);
+  bodies.emplace_back(sun);
+}
 
-  return planets;
+
+// approximates system size, assumes eccentricity is low
+size_t approxSystemSize(const std::vector<OrbitalElements> &planets) {
+  double systemSize = 0.0;
+  for (auto p : planets) {
+    if (p.semiMajorAxis > systemSize) {
+      systemSize = p.semiMajorAxis;
+    }
+  }
+  return size_t(std::ceil(systemSize / M_PER_AU));
 }
