@@ -90,7 +90,7 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
   const std::string firstKey = "\"name\": \"";
   std::fstream fileStream;
   std::string line;
-  int numPlanets = 1;
+  int numBodies = 1; // include sun
 
   fileStream.open("planets.json");
 
@@ -133,15 +133,15 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
       elements.emplace_back(element);
       bodies.emplace_back(body);
 
-      numPlanets++;
+      numBodies++;
     }
   }
 
   const CelestialBody sun = {"sun", Coord(), Coord(), M_SUN};
   bodies.emplace_back(sun);
 
-  elements.resize(numPlanets);
-  bodies.resize(numPlanets);
+  elements.resize(numBodies - 1);
+  bodies.resize(numBodies);
 }
 
 

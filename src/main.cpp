@@ -29,7 +29,7 @@ int main() {
   const size_t systemSize = approxSystemSize(elements);
 
   for (int i = 0; i < steps; i++) {
-    bodies = updateBodies(bodies, dt);
+    updateBodies(bodies, dt);
 
     // end up rendering a lot of the same pixels, but checking is slower?
     drawBodies(bodies, pic, systemSize);

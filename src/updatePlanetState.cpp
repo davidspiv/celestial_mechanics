@@ -89,13 +89,12 @@ void drawBodies(const std::vector<CelestialBody> &planets, Picture &pic,
 }
 
 
-std::vector<CelestialBody>
-updateBodies(const std::vector<CelestialBody> &planets, const int dt) {
-  std::vector<CelestialBody> updatedBodies;
+void updateBodies(std::vector<CelestialBody> &planets, const int dt) {
+  std::vector<CelestialBody> updatedBodies(planets.size());
 
   for (size_t i = 0; i < planets.size(); i++) {
-    updatedBodies.emplace_back(rungeKuttaStep(i, planets, dt));
+    updatedBodies[i] = rungeKuttaStep(i, planets, dt);
   }
 
-  return updatedBodies;
+  planets = updatedBodies;
 };
