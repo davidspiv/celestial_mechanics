@@ -64,3 +64,10 @@ Coord &Coord::operator+=(const Coord &other) {
   z += other.z;
   return *this;
 }
+
+Coord &Coord::operator-=(const Coord &other) {
+  x -= other.x;
+  y -= other.y;
+  z -= other.z;
+  return *this;
+}

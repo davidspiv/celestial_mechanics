@@ -86,16 +86,18 @@ std::string getValueFromJSONLine(const std::string &line) {
 
 // displays formatted results
 void printResults(const std::vector<CelestialBody> &planets) {
+  const Coord earthPos = planets.at(2).pos;
+  const Coord sunPos = planets.at(planets.size() - 1).pos;
+
   for (CelestialBody p : planets) {
-    if (p.name == "Sun")
+    if (p.name == "sun")
       continue;
     std::cout << "----------------------------------\n";
     std::cout << std::setw(27) << "Name: " << p.name << "\n";
     std::cout << std::setw(27) << "Distance from Sun [AU]: ";
-    std::cout << sqrt(p.pos.magSquared(Coord())) / M_PER_AU << std::endl;
+    std::cout << sqrt(p.pos.magSquared(sunPos)) / M_PER_AU << std::endl;
     std::cout << std::setw(27) << "Distance from Earth [AU]: ";
-    std::cout << sqrt(p.pos.magSquared(planets.at(2).pos)) / M_PER_AU
-              << std::endl;
+    std::cout << sqrt(p.pos.magSquared(earthPos)) / M_PER_AU << std::endl;
     std::cout << std::setw(27) << "Vel [km/sec]: ";
     std::cout << sqrt(p.vel.magSquared(Coord())) / M_PER_KM << std::endl;
   }

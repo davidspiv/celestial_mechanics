@@ -15,6 +15,7 @@ struct Coord {
   Coord operator*(const Coord &other) const;
   Coord operator/(double scalar) const;
   Coord &operator+=(const Coord &other);
+  Coord &operator-=(const Coord &other);
   Coord operator-(const Coord &other) const;
   Coord operator/(const Coord &other) const;
 
