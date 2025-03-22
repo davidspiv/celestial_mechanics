@@ -15,7 +15,7 @@ int main() {
   //   const double julianDay = getDate();
   const double julianDay = 366;
   Timer timer;
-  const int dt = 600; // 10-minute intervalsresize
+  const int dt = 600; // 10-minute intervals
   const int steps = round(SEC_PER_DAY * julianDay / double(dt));
 
   const int picSideLength = 500;
