@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "../include/coord.h"
-#include "../include/picture.h"
 #include "../include/planet.h"
 #include "../include/util.h"
 
@@ -66,26 +65,6 @@ CelestialBody rungeKuttaStep(size_t pIndex,
   p.pos += (k1r + k2r * 2.0 + k3r * 2.0 + k4r) * sixth;
 
   return p;
-}
-
-
-void drawBodies(const std::vector<CelestialBody> &planets, Picture &pic,
-                size_t systemSize, bool finalPos) {
-
-  for (CelestialBody p : planets) {
-    Coord pos = p.pos / M_PER_AU;
-    int x = scaleValue(pos.x, systemSize, pic.width() / 2) + pic.width() / 2;
-    int y = scaleValue(-pos.y, systemSize, pic.width() / 2) + pic.width() / 2;
-    if (p.name == "sun")
-      pic.set(x, y, 255, 255, 0);
-    else {
-      if (!finalPos) {
-        pic.set(x, y, 0, 255, 0);
-      } else {
-        pic.set(x, y, 255, 0, 0);
-      }
-    }
-  }
 }
 
 
