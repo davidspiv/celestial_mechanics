@@ -1,5 +1,5 @@
-#ifndef CELESTIAL_BODY_H
-#define CELESTIAL_BODY_H
+#ifndef PLANET_H
+#define PLANET_H
 
 #include "coord.h"
 #include <string>

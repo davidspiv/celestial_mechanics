@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "celestialBody.h"
 #include "coord.h"
+#include "planet.h"
 
 // calculates heliocentric position and velocity vectors
 void populateStateVectors(const OrbitalElements &element, CelestialBody &body,

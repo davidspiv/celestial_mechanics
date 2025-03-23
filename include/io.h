@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "celestialBody.h"
+#include "planet.h"
 
 // requests and returns text input from user
 std::string getString(const std::string &prompt);

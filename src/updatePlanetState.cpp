@@ -3,9 +3,9 @@
 #include <numeric>
 #include <vector>
 
-#include "../include/celestialBody.h"
 #include "../include/coord.h"
 #include "../include/picture.h"
+#include "../include/planet.h"
 #include "../include/util.h"
 
 

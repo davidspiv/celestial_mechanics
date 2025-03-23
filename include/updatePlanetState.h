@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include "celestialBody.h"
 #include "picture.h"
+#include "planet.h"
 
 void updateBodies(std::vector<CelestialBody> &planets, const int dt);
 

@@ -1,4 +1,4 @@
-#include "../include/celestialBody.h"
+#include "../include/planet.h"
 #include "../include/date.h"
 #include "../include/getInitialPlanetState.h"
 #include "../include/util.h"

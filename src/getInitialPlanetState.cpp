@@ -1,4 +1,4 @@
-#include "../include/celestialBody.h"
+#include "../include/planet.h"
 #include "../include/coord.h"
 #include "../include/io.h"
 #include "../include/util.h"
