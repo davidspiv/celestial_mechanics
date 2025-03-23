@@ -46,7 +46,8 @@ double calcPeriod(const OrbitalElements &element, const CelestialBody &body) {
   const double proportionalityConstant =
       (4 * pow(M_PI, 2)) / (G * (body.mass + M_SUN));
 
-  return sqrt(proportionalityConstant * pow(element.semiMajorAxis, 3));
+  return sqrt(proportionalityConstant * pow(element.semiMajorAxis, 3)) /
+         SEC_PER_DAY;
 }
 
 
@@ -61,10 +62,10 @@ double getNormalizedMeanAnomaly(const double meanAnomaly, const double period,
 void populateStateVectors(const OrbitalElements &element, CelestialBody &body,
                           float daysSinceEpoch) {
 
-  double period = calcPeriod(element, body);
+//   double period = calcPeriod(element, body);
 
   const double normalizedMeanAnomaly =
-      getNormalizedMeanAnomaly(element.meanAnomaly, period, daysSinceEpoch);
+      getNormalizedMeanAnomaly(element.meanAnomaly, element.period, daysSinceEpoch);
 
   // Orbital elements normalized to J2000
   const double a = element.semiMajorAxis;
@@ -151,6 +152,9 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
 
     std::getline(fileStream, line);
     body.mass = std::stod(getValueFromJSONLine(line));
+
+	std::getline(fileStream, line);
+    element.period = std::stod(getValueFromJSONLine(line));
 
     elements.emplace_back(element);
     bodies.emplace_back(body);

@@ -18,6 +18,7 @@ struct OrbitalElements {
   double longitudeOfAscendingNode;
   double longitudeOfPerihelion;
   double meanAnomaly;
+  double period;
 };
 
 #endif

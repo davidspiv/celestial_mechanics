@@ -8,7 +8,8 @@
 			"longitudeOfAscendingNode": 48.33167,
 			"longitudeOfPerihelion": 77.45645,
 			"meanAnomaly": 174.796,
-			"mass": 3.3011e23
+			"mass": 3.3011e23,
+			"period": 87.969
 		},
 		{
 			"name": "venus",
@@ -18,7 +19,8 @@
 			"longitudeOfAscendingNode": 76.68069,
 			"longitudeOfPerihelion": 131.53298,
 			"meanAnomaly": 50.115,
-			"mass": 4.8675e24
+			"mass": 4.8675e24,
+			"period": 224.7008
 		},
 		{
 			"name": "earth",
@@ -28,7 +30,8 @@
 			"longitudeOfAscendingNode": -11.26064,
 			"longitudeOfPerihelion": 102.94719,
 			"meanAnomaly": 358.617,
-			"mass": 5.97237e24
+			"mass": 5.97237e24,
+			"period": 365.259636
 		},
 		{
 			"name": "mars",
@@ -38,7 +41,8 @@
 			"longitudeOfAscendingNode": 49.57854,
 			"longitudeOfPerihelion": 336.04084,
 			"meanAnomaly": 19.412,
-			"mass": 6.4171e23
+			"mass": 6.4171e23,
+			"period": 686.9957
 		},
 		{
 			"name": "jupiter",
@@ -48,7 +52,8 @@
 			"longitudeOfAscendingNode": 100.55615,
 			"longitudeOfPerihelion": 14.75385,
 			"meanAnomaly": 20.020,
-			"mass": 1.8982e27
+			"mass": 1.8982e27,
+			"period": 11.862
 		},
 		{
 			"name": "saturn",
@@ -58,7 +63,8 @@
 			"longitudeOfAscendingNode": 113.71504,
 			"longitudeOfPerihelion": 92.43194,
 			"meanAnomaly": 317.020,
-			"mass": 5.6834e26
+			"mass": 5.6834e26,
+			"period": 29.4475
 		},
 		{
 			"name": "uranus",
@@ -68,7 +74,8 @@
 			"longitudeOfAscendingNode": 74.22988,
 			"longitudeOfPerihelion": 170.96424,
 			"meanAnomaly": 142.238600,
-			"mass": 8.6810e25
+			"mass": 8.6810e25,
+			"period": 84.011
 		},
 		{
 			"name": "neptune",
@@ -78,7 +85,8 @@
 			"longitudeOfAscendingNode": 131.72169,
 			"longitudeOfPerihelion": 44.97135,
 			"meanAnomaly": 259.883,
-			"mass": 1.02413e26
+			"mass": 1.02413e26,
+			"period": 164.79
 		}
 	]
 }

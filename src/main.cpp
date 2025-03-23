@@ -19,34 +19,33 @@ int main() {
   // Initialize planets
   const double julianDay = getDate();
   populatePlanets(elements, bodies);
+
+  // N-body approximation for Jovian planets
+  // Use properties of Keplerian orbit to compute initial state vectors
   for (size_t i = 0; i < bodies.size() - 1; i++) {
     populateStateVectors(elements[i], bodies[i], 0);
   }
-
-  // Initialize photo
-  const size_t picSize = 500;
-  const size_t systemSizeAU = approxSystemSize(elements);
-  Picture pic(picSize, picSize, 0, 0, 0);
-
-  // N-body model. Numerically integrate, using each step to update planet and
-  // photo
-  const int dt = SEC_PER_DAY; // 1-week intervals
+  // Numerically integrate, using each step to update planet
+  const int dt = SEC_PER_DAY * 7;
   const int steps = round(SEC_PER_DAY * julianDay / double(dt));
   for (int i = 0; i < steps; i++) {
     updateBodies(bodies, dt);
-    drawBodies(bodies, pic, systemSizeAU);
   }
 
-  // Re-calculate terrestrial planets final state. A simple one-body
-  // approximation is accurate for these planets
-  double jovianPlanetsIndex = 5;
-  for (size_t i = 0; i < jovianPlanetsIndex; i++) {
+  // One-body approximation using properties of Keplerian orbit
+  const double planetDivideIndex = 5;
+  for (size_t i = 0; i < planetDivideIndex; i++) {
     populateStateVectors(elements[i], bodies[i], julianDay);
   }
 
-  // Handle final results
+  // Handle photo
+  const size_t picSize = 500;
+  const size_t systemSizeAU = approxSystemSize(elements);
+  Picture pic(picSize, picSize, 0, 0, 0);
   drawBodies(bodies, pic, systemSizeAU, true);
   pic.save("result.png");
+
+  // Output formatted results
   //   printTest(bodies, julianDay);
   printResults(bodies);
 }
