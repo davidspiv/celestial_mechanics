@@ -28,7 +28,8 @@ int main() {
   const size_t systemSizeAU = approxSystemSize(elements);
   Picture pic(picSize, picSize, 0, 0, 0);
 
-  // Update planets and photo
+  // N-body model. Numerically integrate, using each step to update planet and
+  // photo
   const int dt = SEC_PER_DAY; // 1-week intervals
   const int steps = round(SEC_PER_DAY * julianDay / double(dt));
   for (int i = 0; i < steps; i++) {
@@ -36,7 +37,14 @@ int main() {
     drawBodies(bodies, pic, systemSizeAU);
   }
 
-  // Handle results
+  // Re-calculate terrestrial planets final state. A simple one-body
+  // approximation is accurate for these planets
+  double jovianPlanetsIndex = 5;
+  for (size_t i = 0; i < jovianPlanetsIndex; i++) {
+    populateStateVectors(elements[i], bodies[i], julianDay);
+  }
+
+  // Handle final results
   drawBodies(bodies, pic, systemSizeAU, true);
   pic.save("result.png");
   //   printTest(bodies, julianDay);
