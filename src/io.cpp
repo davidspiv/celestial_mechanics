@@ -121,8 +121,10 @@ void printTest(const std::vector<CelestialBody> &bodies,
     double velObserved = bodies[i].vel.magSquared(Coord());
     double velExpected = solutionBodies[i].vel.magSquared(Coord());
 
-    double posError = (posObserved - posExpected) / posExpected * 100.0;
-    double velError = (velObserved - velExpected) / velExpected * 100.0;
+    double posError =
+        std::abs((posObserved - posExpected) / posExpected * 100.0);
+    double velError =
+        std::abs((velObserved - velExpected) / velExpected * 100.0);
 
     std::cout << std::setw(7) << "POS: " << posError << '\n';
     std::cout << std::setw(7) << "VEL: " << velError << "\n\n";

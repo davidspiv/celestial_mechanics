@@ -17,7 +17,7 @@
 			"orbitalInclination": 3.39471,
 			"longitudeOfAscendingNode": 76.68069,
 			"longitudeOfPerihelion": 131.53298,
-			"meanAnomaly": 50.45,
+			"meanAnomaly": 50.115,
 			"mass": 4.8675e24
 		},
 		{
@@ -27,7 +27,7 @@
 			"orbitalInclination": 0.00005,
 			"longitudeOfAscendingNode": -11.26064,
 			"longitudeOfPerihelion": 102.94719,
-			"meanAnomaly": 357.51716,
+			"meanAnomaly": 358.617,
 			"mass": 5.97237e24
 		},
 		{
@@ -37,7 +37,7 @@
 			"orbitalInclination": 1.85061,
 			"longitudeOfAscendingNode": 49.57854,
 			"longitudeOfPerihelion": 336.04084,
-			"meanAnomaly": 19.387,
+			"meanAnomaly": 19.412,
 			"mass": 6.4171e23
 		},
 		{

@@ -11,35 +11,36 @@
 #include <string>
 #include <vector>
 
+
+static CelestialBody sun = {"sun", Coord(), Coord(), M_SUN};
+
+
 // returns numerical approximation of Eccentric Anomaly (E) using the
-// Newton-Raphson method
+// Newton-Raphson method.
 double calcEccentricAnomaly(double eccentricity, double meanAnomaly) {
   const double e = eccentricity;
   const double M = meanAnomaly;
-  auto isConverging = [](int count) { return count < 19; };
+  const double tolerance = 1e-8;
+  const int maxIterations = 20;
 
-  // Kepler's equation
-  double E = M + e * sin(M) * (1 + e * cos(M));
+  // Initial guess
+  double E = (e < 0.8) ? M : M + e * sin(M) * (1 + e * cos(M));
 
-  // Newton's method
-  double delta;
-  int iterationCount = 0;
-  do {
-    const double E1 = E - (E - e * sin(E) - M) / (1 - e * cos(E));
-    delta = abs(E1 - E);
-    E = E1;
-    iterationCount++;
-  } while (delta >= 0.00001 && isConverging(iterationCount));
+  // Newton-Raphson method
+  for (int iterationCount = 0; iterationCount < maxIterations;
+       ++iterationCount) {
+    double deltaE = (E - e * sin(E) - M) / (1 - e * cos(E));
+    E -= deltaE;
 
-  // Newton's method does not work on hyperbolic orbits
-  if (!isConverging(iterationCount)) {
-    throw std::domain_error(
-        "eccentricity too high. unable to converge\ndelta: " +
-        std::to_string(delta));
+    if (std::abs(deltaE) < tolerance) {
+      return E;
+    }
   }
 
-  return E;
+  throw std::domain_error(
+      "Failed to converge: eccentricity probably too high\n");
 }
+
 
 double calcPeriod(const OrbitalElements &element, const CelestialBody &body) {
   const double proportionalityConstant =
@@ -48,10 +49,11 @@ double calcPeriod(const OrbitalElements &element, const CelestialBody &body) {
   return sqrt(proportionalityConstant * pow(element.semiMajorAxis, 3));
 }
 
-double getNormalizedMeanAnomaly(const OrbitalElements &element,
-                                const double period, double daysSinceEpoch) {
+
+double getNormalizedMeanAnomaly(const double meanAnomaly, const double period,
+                                double daysSinceEpoch) {
   const double meanMotion = (2 * M_PI) / period; // Radians per day
-  return normalizeRadians(element.meanAnomaly + meanMotion * daysSinceEpoch);
+  return normalizeRadians(meanAnomaly + meanMotion * daysSinceEpoch);
 }
 
 
@@ -62,7 +64,7 @@ void populateStateVectors(const OrbitalElements &element, CelestialBody &body,
   double period = calcPeriod(element, body);
 
   const double normalizedMeanAnomaly =
-      getNormalizedMeanAnomaly(element, period, daysSinceEpoch);
+      getNormalizedMeanAnomaly(element.meanAnomaly, period, daysSinceEpoch);
 
   // Orbital elements normalized to J2000
   const double a = element.semiMajorAxis;
@@ -156,11 +158,9 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
     numBodies++;
   }
 
+  bodies.push_back(sun);
 
-  const CelestialBody sun = {"sun", Coord(), Coord(), M_SUN};
-  bodies.emplace_back(sun);
-
-  elements.resize(numBodies - 1);
+  elements.resize(numBodies);
   bodies.resize(numBodies);
 }
 
@@ -179,11 +179,11 @@ void populateSolutions(std::vector<CelestialBody> &bodies,
   const std::string bodyStartKey = "\"name\": \"";
   std::fstream fileStream;
   std::string line;
-  int numBodies = 0;
+  int numBodies = 1; // include sun
 
   fileStream.open("solutions.json");
 
-  //get to correct data
+  // get to correct data
   while (std::getline(fileStream, line)) {
     const size_t dataStart = line.find(dataStartKey);
     if (dataStart != std::string::npos)
@@ -226,6 +226,8 @@ void populateSolutions(std::vector<CelestialBody> &bodies,
 
     numBodies++;
   }
+
+  bodies.push_back(sun);
 
   bodies.resize(numBodies);
 }
