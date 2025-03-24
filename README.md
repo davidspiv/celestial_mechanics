@@ -1,6 +1,6 @@
 # Celestial Mechanics Demo
 
-Calculates state vectors of the solar system's planets at an arbitrary moment in time. Outputs both a PNG of the system in the XY plane and formatted distances in the console.
+Calculates state vectors of the solar system's planets at an arbitrary moment in time. Outputs both a 2D model of the system as a PNG and formatted distances in the console.
 
 ## Get Started
 
