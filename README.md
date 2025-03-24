@@ -9,11 +9,9 @@ Calculates state vectors of the solar system's planets at an arbitrary moment in
 - **C++17** or higher
 
 ### Build and Run
-```sh
-make && ./build/main.o
-# OR
-make run
-```
+`make && ./build/main`\
+OR \
+`make run`
 
 ## Implementation ##
 Uses two separate strategies.
