@@ -1,6 +1,6 @@
 #include "../include/date.h"
-#include "../include/getInitialPlanetState.h"
 #include "../include/json.h"
+#include "../include/keplerianApprox.h"
 #include "../include/planet.h"
 #include "../include/util.h"
 
