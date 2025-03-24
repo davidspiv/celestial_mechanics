@@ -9,9 +9,13 @@ Calculates state vectors of the solar system's planets at an arbitrary moment in
 - **C++17** or higher
 
 ### Build and Run
-`make && ./build/main`\
-OR \
-`make run`
+```
+make && ./build/main`
+```
+OR
+```
+make run
+```
 
 ## Implementation ##
 Uses two separate strategies.
@@ -23,7 +27,7 @@ A. **Terrestrial Planets** *(Mercury – Mars)*\
    3. Convert the position along the orbital plane into heliocentric 3D Cartesian coordinates.
 
 B. **Jovian Planets** *(Jupiter – Neptune)*\
-   The position of each planet is approximated with an N-body model to account for perturbations:
+   To account for perturbations in the orbits near Jupiter and Saturn, the position of each planet is approximated using an N-body model:
    1. Obtain initial state vectors by following the same Keplerian orbit steps used for Terrestrial planets (excluding normalization to the target date).
    2. Calculate an acceleration vector for each planet by summing the gravitational effects from the Sun and other planets based on their masses and relative positions.
    3. Use the 4th-order Runge-Kutta method to numerically integrate the acceleration vectors twice — once for velocity and again for position — over the specified time step.
@@ -34,7 +38,7 @@ B. **Jovian Planets** *(Jupiter – Neptune)*\
 : the mean distance between the Earth and the Sun
 
 **Orbital Elements**
-: a set of parameters designed to approximate the planet's orbit at a given Epoch
+: a set of parameters designed to approximate the planet's orbit at a given epoch
 
 **J2000 Epoch**
 : Jan 1, 2000 — the reference point for orbital elements used in this program
