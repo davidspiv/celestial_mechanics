@@ -24,4 +24,8 @@ void drawBodies(const std::vector<CelestialBody> &planets, Picture &pic,
                 size_t systemSize, bool finalPos);
 
 
+// approximates system size, assumes eccentricity is low
+size_t approxSystemSize(const std::vector<OrbitalElements> &elements);
+
+
 #endif

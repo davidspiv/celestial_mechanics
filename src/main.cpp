@@ -4,20 +4,23 @@
 #include "../include/getInitialPlanetState.h"
 #include "../include/helpers.h"
 #include "../include/io.h"
+#include "../include/json.h"
 #include "../include/picture.h"
 #include "../include/planet.h"
 #include "../include/timer.h"
-
+#include "../include/util.h"
 
 int main() {
   // Parallel vectors to represent planets
   std::vector<OrbitalElements> elements;
   std::vector<CelestialBody> bodies;
 
-  // Initialize planets
+  // Initialize system
   const double julianDay = getDate();
   const size_t planetDivideIndex = 4;
+  static CelestialBody sun = {"sun", Coord(), Coord(), M_SUN};
   populatePlanets(elements, bodies);
+  bodies.emplace_back(sun);
 
   // Update planets to target date
   handleJovianBodies(elements, bodies, julianDay, planetDivideIndex);

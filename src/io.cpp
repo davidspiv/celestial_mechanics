@@ -1,11 +1,14 @@
-#include "../include/planet.h"
 #include "../include/date.h"
 #include "../include/getInitialPlanetState.h"
+#include "../include/json.h"
+#include "../include/planet.h"
 #include "../include/util.h"
 
 #include <cmath>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -65,23 +68,6 @@ double getDate() {
   } while (!isFormatted);
 
   return date.calcDaysSinceEpoch();
-}
-
-
-// returns value as string regardless of data type
-std::string getValueFromJSONLine(const std::string &line) {
-  const size_t startIndex = line.rfind(':', line.length() - 1) + 2;
-  const size_t valueLength = line.length() - startIndex;
-  std::string value = line.substr(startIndex, valueLength);
-
-  // remove quotes from json string values;
-  if (line.find(": \"") == std::string::npos) {
-    return value;
-  }
-
-  // ignore trailing commas
-  const size_t endIndex = value.rfind('"') - 1;
-  return value.substr(1, endIndex);
 }
 
 

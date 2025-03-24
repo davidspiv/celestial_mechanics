@@ -1,18 +1,10 @@
-#include "../include/planet.h"
 #include "../include/coord.h"
 #include "../include/io.h"
+#include "../include/planet.h"
 #include "../include/util.h"
 
 #include <cmath>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <sstream>
-#include <string>
 #include <vector>
-
-
-static CelestialBody sun = {"sun", Coord(), Coord(), M_SUN};
 
 
 // returns numerical approximation of Eccentric Anomaly (E) using the
@@ -62,10 +54,10 @@ double getNormalizedMeanAnomaly(const double meanAnomaly, const double period,
 void populateStateVectors(const OrbitalElements &element, CelestialBody &body,
                           float daysSinceEpoch) {
 
-//   double period = calcPeriod(element, body);
+  //   double period = calcPeriod(element, body);
 
-  const double normalizedMeanAnomaly =
-      getNormalizedMeanAnomaly(element.meanAnomaly, element.period, daysSinceEpoch);
+  const double normalizedMeanAnomaly = getNormalizedMeanAnomaly(
+      element.meanAnomaly, element.period, daysSinceEpoch);
 
   // Orbital elements normalized to J2000
   const double a = element.semiMajorAxis;
@@ -104,146 +96,4 @@ void populateStateVectors(const OrbitalElements &element, CelestialBody &body,
   // Heliocentric orbital velocity vector in 3D space, assuming the satellite's
   // motion is counterclockwise
   body.vel = {orbitalSpeed * -yh, orbitalSpeed * xh, orbitalSpeed * zh};
-}
-
-
-// reads planets.json into a parallel vectors
-void populatePlanets(std::vector<OrbitalElements> &elements,
-                     std::vector<CelestialBody> &bodies) {
-  const std::string bodyStartKey = "\"name\": \"";
-  std::fstream fileStream;
-  std::string line;
-  int numBodies = 1; // include sun
-
-  fileStream.open("planets.json");
-
-  while (std::getline(fileStream, line)) {
-    const size_t objectStart = line.find(bodyStartKey);
-
-    if (objectStart == std::string::npos)
-      continue;
-
-    // build element
-    OrbitalElements element;
-    CelestialBody body;
-
-    body.name = getValueFromJSONLine(line);
-
-    std::getline(fileStream, line);
-    element.semiMajorAxis = std::stod(getValueFromJSONLine(line)) * M_PER_AU;
-
-    std::getline(fileStream, line);
-    element.eccentricity = std::stod(getValueFromJSONLine(line));
-
-    std::getline(fileStream, line);
-    element.orbitalInclination =
-        toRadians(std::stod(getValueFromJSONLine(line)));
-
-    std::getline(fileStream, line);
-    element.longitudeOfAscendingNode =
-        toRadians(std::stod(getValueFromJSONLine(line)));
-
-    std::getline(fileStream, line);
-    element.longitudeOfPerihelion =
-        toRadians(std::stod(getValueFromJSONLine(line)));
-
-    std::getline(fileStream, line);
-    element.meanAnomaly = toRadians(std::stod(getValueFromJSONLine(line)));
-
-    std::getline(fileStream, line);
-    body.mass = std::stod(getValueFromJSONLine(line));
-
-	std::getline(fileStream, line);
-    element.period = std::stod(getValueFromJSONLine(line));
-
-    elements.emplace_back(element);
-    bodies.emplace_back(body);
-
-    numBodies++;
-  }
-
-  bodies.push_back(sun);
-
-  elements.resize(numBodies);
-  bodies.resize(numBodies);
-}
-
-
-void populateSolutions(std::vector<CelestialBody> &bodies,
-                       const double julianDay) {
-
-  const double normalizedJD = julianDay + 2451544.5;
-  const bool isHalfDay = normalizedJD - static_cast<int>(normalizedJD) == 0.5;
-  std::ostringstream ss;
-
-  ss << "JD" << std::fixed << std::setprecision((isHalfDay ? 1 : 0))
-     << normalizedJD;
-
-  const std::string dataStartKey = ss.str();
-  const std::string bodyStartKey = "\"name\": \"";
-  std::fstream fileStream;
-  std::string line;
-  int numBodies = 1; // include sun
-
-  fileStream.open("solutions.json");
-
-  // get to correct data
-  while (std::getline(fileStream, line)) {
-    const size_t dataStart = line.find(dataStartKey);
-    if (dataStart != std::string::npos)
-      break;
-  }
-
-  while (std::getline(fileStream, line)) {
-    const size_t objectStart = line.find(bodyStartKey);
-
-    if (objectStart == std::string::npos)
-      continue;
-
-    // build element
-    CelestialBody body;
-
-    body.name = getValueFromJSONLine(line);
-
-    std::getline(fileStream, line);
-    std::getline(fileStream, line);
-    body.pos.x = std::stod(getValueFromJSONLine(line)) * M_PER_KM;
-    std::getline(fileStream, line);
-    body.pos.y = std::stod(getValueFromJSONLine(line)) * M_PER_KM;
-    std::getline(fileStream, line);
-    body.pos.z = std::stod(getValueFromJSONLine(line)) * M_PER_KM;
-
-    std::getline(fileStream, line);
-    std::getline(fileStream, line);
-    std::getline(fileStream, line);
-    body.vel.x = std::stod(getValueFromJSONLine(line)) * M_PER_KM;
-    std::getline(fileStream, line);
-    body.vel.y = std::stod(getValueFromJSONLine(line)) * M_PER_KM;
-    std::getline(fileStream, line);
-    body.vel.z = std::stod(getValueFromJSONLine(line)) * M_PER_KM;
-
-    std::getline(fileStream, line);
-    std::getline(fileStream, line);
-    body.mass = std::stod(getValueFromJSONLine(line));
-
-    bodies.emplace_back(body);
-
-    numBodies++;
-  }
-
-  bodies.push_back(sun);
-
-  bodies.resize(numBodies);
-}
-
-
-// approximates system size, assumes eccentricity is low
-size_t approxSystemSize(const std::vector<OrbitalElements> &elements) {
-  double systemSize = 0.0;
-  for (auto p : elements) {
-    if (p.semiMajorAxis > systemSize) {
-      systemSize = p.semiMajorAxis;
-    }
-  }
-  return size_t(std::ceil(systemSize / M_PER_AU));
 }

@@ -61,3 +61,16 @@ void drawBodies(const std::vector<CelestialBody> &planets, Picture &pic,
     }
   }
 }
+
+
+// approximates system size, assumes eccentricity is low
+size_t approxSystemSize(const std::vector<OrbitalElements> &elements) {
+	double systemSize = 0.0;
+	for (auto p : elements) {
+	  if (p.semiMajorAxis > systemSize) {
+		systemSize = p.semiMajorAxis;
+	  }
+	}
+	return size_t(std::ceil(systemSize / M_PER_AU));
+  }
+
