@@ -7,6 +7,23 @@
 #include <vector>
 
 
+double calcPeriod(const OrbitalElements &element,
+                  const OrbitalStateVectors &body) {
+  const double proportionalityConstant =
+      (4 * pow(M_PI, 2)) / (G * (body.mass + M_SUN));
+
+  return sqrt(proportionalityConstant * pow(element.semiMajorAxis, 3)) /
+         SEC_PER_DAY;
+}
+
+
+double getNormalizedMeanAnomaly(const double meanAnomaly, const double period,
+                                double daysSinceEpoch) {
+  const double meanMotion = (2 * M_PI) / period; // Radians per day
+  return normalizeRadians(meanAnomaly + meanMotion * daysSinceEpoch);
+}
+
+
 // returns numerical approximation of Eccentric Anomaly (E) using the
 // Newton-Raphson method.
 double calcEccentricAnomaly(double eccentricity, double meanAnomaly) {
@@ -34,30 +51,14 @@ double calcEccentricAnomaly(double eccentricity, double meanAnomaly) {
 }
 
 
-double calcPeriod(const OrbitalElements &element, const CelestialBody &body) {
-  const double proportionalityConstant =
-      (4 * pow(M_PI, 2)) / (G * (body.mass + M_SUN));
-
-  return sqrt(proportionalityConstant * pow(element.semiMajorAxis, 3)) /
-         SEC_PER_DAY;
-}
-
-
-double getNormalizedMeanAnomaly(const double meanAnomaly, const double period,
-                                double daysSinceEpoch) {
-  const double meanMotion = (2 * M_PI) / period; // Radians per day
-  return normalizeRadians(meanAnomaly + meanMotion * daysSinceEpoch);
-}
-
-
 // calculates heliocentric position and velocity vectors
-void populateStateVectors(const OrbitalElements &element, CelestialBody &body,
-                          float daysSinceEpoch) {
+void calcStateVectors(const OrbitalElements &element,
+                          OrbitalStateVectors &body, float daysSinceEpoch) {
 
-  //   double period = calcPeriod(element, body);
+  double period = calcPeriod(element, body);
 
-  const double normalizedMeanAnomaly = getNormalizedMeanAnomaly(
-      element.meanAnomaly, element.period, daysSinceEpoch);
+  const double normalizedMeanAnomaly =
+      getNormalizedMeanAnomaly(element.meanAnomaly, period, daysSinceEpoch);
 
   // Orbital elements normalized to J2000
   const double a = element.semiMajorAxis;

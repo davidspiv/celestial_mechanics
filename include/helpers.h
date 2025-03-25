@@ -9,18 +9,18 @@
 
 // N-body model of Jovian planets
 void handleJovianBodies(const std::vector<OrbitalElements> &elements,
-                        std::vector<CelestialBody> &bodies,
-                        const double julianDay, const size_t planetDivideIndex);
+                        std::vector<OrbitalStateVectors> &bodies,
+                        const double daysSinceEpoch, const size_t planetDivideIndex);
 
 
 // One-body approximation for Terrestrial planets
 void handleTerrestrialBodies(const std::vector<OrbitalElements> &elements,
-                             std::vector<CelestialBody> &bodies,
-                             const double julianDay,
+                             std::vector<OrbitalStateVectors> &bodies,
+                             const double daysSinceEpoch,
                              const size_t planetDivideIndex);
 
 
-void drawBodies(const std::vector<CelestialBody> &planets, Picture &pic,
+void drawBodies(const std::vector<OrbitalStateVectors> &planets, Picture &pic,
                 size_t systemSize, bool finalPos);
 
 

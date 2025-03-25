@@ -28,7 +28,7 @@ std::string getValueFromJSONLine(const std::string &line) {
 
 // reads planets.json into a parallel vectors
 void populatePlanets(std::vector<OrbitalElements> &elements,
-                     std::vector<CelestialBody> &bodies) {
+                     std::vector<OrbitalStateVectors> &bodies) {
   const std::string bodyStartKey = "\"name\": \"";
   std::fstream fileStream;
   std::string line;
@@ -44,7 +44,7 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
 
     // build element
     OrbitalElements element;
-    CelestialBody body;
+    OrbitalStateVectors body;
 
     body.name = getValueFromJSONLine(line);
 
@@ -73,7 +73,7 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
     body.mass = std::stod(getValueFromJSONLine(line));
 
     std::getline(fileStream, line);
-    element.period = std::stod(getValueFromJSONLine(line));
+    body.period = std::stod(getValueFromJSONLine(line));
 
     elements.emplace_back(element);
     bodies.emplace_back(body);
@@ -81,7 +81,7 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
     numBodies++;
   }
 
-  static CelestialBody sun = {"sun", Coord(), Coord(), M_SUN};
+  static OrbitalStateVectors sun = {"sun", Coord(), Coord(), M_SUN};
   bodies.emplace_back(sun);
 
   elements.resize(numBodies);
@@ -89,21 +89,21 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
 }
 
 
-void populateSolutions(std::vector<CelestialBody> &bodies,
-                       const double julianDay) {
+void populateSolutions(std::vector<OrbitalStateVectors> &bodies,
+                       const double daysSinceEpoch) {
 
-  const double normalizedJD = julianDay + 2451544.5;
-  const bool isHalfDay = normalizedJD - static_cast<int>(normalizedJD) == 0.5;
-  std::ostringstream ss;
+  const double julianDay = daysSinceEpoch + 2451544.5;
+  const bool isHalfDay = julianDay - static_cast<int>(julianDay) == 0.5;
+  std::ostringstream keyBuffer;
 
-  ss << "JD" << std::fixed << std::setprecision((isHalfDay ? 1 : 0))
-     << normalizedJD;
+  keyBuffer << "JD" << std::fixed << std::setprecision((isHalfDay ? 1 : 0))
+            << julianDay;
 
-  const std::string dataStartKey = ss.str();
+  const std::string dataStartKey = keyBuffer.str();
   const std::string bodyStartKey = "\"name\": \"";
   std::fstream fileStream;
   std::string line;
-  int numBodies = 1; // include sun
+  int numBodies = 0;
 
   fileStream.open("solutions.json");
 
@@ -117,14 +117,14 @@ void populateSolutions(std::vector<CelestialBody> &bodies,
   if (line.empty())
     throw std::domain_error("No test corresponding to input date found.\n");
 
-  while (std::getline(fileStream, line) && line != "]") {
+  while (std::getline(fileStream, line) && line.find("]")) {
     const size_t objectStart = line.find(bodyStartKey);
 
     if (objectStart == std::string::npos)
       continue;
 
     // build element
-    CelestialBody body;
+    OrbitalStateVectors body;
 
     body.name = getValueFromJSONLine(line);
 
@@ -149,13 +149,80 @@ void populateSolutions(std::vector<CelestialBody> &bodies,
     std::getline(fileStream, line);
     body.mass = std::stod(getValueFromJSONLine(line));
 
+    body.period = 0;
+
     bodies.emplace_back(body);
 
     numBodies++;
   }
 
-  static CelestialBody sun = {"sun", Coord(), Coord(), M_SUN};
+  static OrbitalStateVectors sun = {"sun", Coord(), Coord(), M_SUN};
   bodies.emplace_back(sun);
+  numBodies++;
 
   bodies.resize(numBodies);
+}
+
+
+void populateStateVectors(std::vector<OrbitalStateVectors> &bodies) {
+
+  const std::string dataStartKey = "JD2451544.5";
+  const std::string bodyStartKey = "\"name\": \"";
+  std::fstream fileStream;
+  std::string line;
+  int bodiesIndex = 0;
+
+  fileStream.open("solutions.json");
+
+  // get to correct data
+  while (std::getline(fileStream, line)) {
+    const size_t dataStart = line.find(dataStartKey);
+    if (dataStart != std::string::npos)
+      break;
+  }
+
+  if (line.empty())
+    throw std::domain_error("J2000 Epoch data not found.\n");
+
+  while (std::getline(fileStream, line) &&
+         line.find("]") == std::string::npos) {
+    const size_t objectStart = line.find(bodyStartKey);
+
+    if (objectStart == std::string::npos)
+      continue;
+
+    bodies.at(bodiesIndex).name = getValueFromJSONLine(line);
+
+    std::getline(fileStream, line);
+    std::getline(fileStream, line);
+    bodies.at(bodiesIndex).pos.x =
+        std::stod(getValueFromJSONLine(line)) * M_PER_KM;
+    std::getline(fileStream, line);
+    bodies.at(bodiesIndex).pos.y =
+        std::stod(getValueFromJSONLine(line)) * M_PER_KM;
+    std::getline(fileStream, line);
+    bodies.at(bodiesIndex).pos.z =
+        std::stod(getValueFromJSONLine(line)) * M_PER_KM;
+
+    std::getline(fileStream, line);
+    std::getline(fileStream, line);
+    std::getline(fileStream, line);
+    bodies.at(bodiesIndex).vel.x =
+        std::stod(getValueFromJSONLine(line)) * M_PER_KM;
+    std::getline(fileStream, line);
+    bodies.at(bodiesIndex).vel.y =
+        std::stod(getValueFromJSONLine(line)) * M_PER_KM;
+    std::getline(fileStream, line);
+    bodies.at(bodiesIndex).vel.z =
+        std::stod(getValueFromJSONLine(line)) * M_PER_KM;
+
+    std::getline(fileStream, line);
+    std::getline(fileStream, line);
+    bodies.at(bodiesIndex).mass = std::stod(getValueFromJSONLine(line));
+
+    bodiesIndex++;
+  }
+
+  if (bodiesIndex != 8)
+    throw std::range_error("Mismatch between json data and number of planets");
 }

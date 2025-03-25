@@ -7,7 +7,7 @@
 #include "planet.h"
 
 // calculates heliocentric position and velocity vectors
-void populateStateVectors(const OrbitalElements &element, CelestialBody &body,
+void calcStateVectors(const OrbitalElements &element, OrbitalStateVectors &body,
                           float daysSinceEpoch);
 
 #endif

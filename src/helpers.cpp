@@ -6,10 +6,10 @@
 #include <vector>
 
 
-void drawBodies(const std::vector<CelestialBody> &planets, Picture &pic,
+void drawBodies(const std::vector<OrbitalStateVectors> &planets, Picture &pic,
                 size_t systemSize, bool finalPos) {
 
-  for (CelestialBody p : planets) {
+  for (OrbitalStateVectors p : planets) {
     Coord pos = p.pos / M_PER_AU;
     int x = scaleValue(pos.x, systemSize, pic.width() / 2) + pic.width() / 2;
     int y = scaleValue(-pos.y, systemSize, pic.width() / 2) + pic.width() / 2;

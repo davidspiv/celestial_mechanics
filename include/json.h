@@ -8,11 +8,13 @@
 
 // reads planets.json into a parallel vectors
 void populatePlanets(std::vector<OrbitalElements> &elements,
-                     std::vector<CelestialBody> &bodies);
+                     std::vector<OrbitalStateVectors> &bodies);
 
 
-void populateSolutions(std::vector<CelestialBody> &bodies,
-                       const double julianDay);
+void populateSolutions(std::vector<OrbitalStateVectors> &bodies,
+                       const double daysSinceEpoch);
+
+void populateStateVectors(std::vector<OrbitalStateVectors> &bodies);
 
 
 #endif

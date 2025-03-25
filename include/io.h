@@ -15,10 +15,10 @@ double getDate();
 
 
 // displays formatted results
-void printResults(const std::vector<CelestialBody> &planets);
+void printResults(const std::vector<OrbitalStateVectors> &planets);
 
 
-void printTest(const std::vector<CelestialBody> &bodies,
-               const double julianDay);
+void printTest(const std::vector<OrbitalStateVectors> &bodies,
+               const double daysSinceEpoch);
 
 #endif

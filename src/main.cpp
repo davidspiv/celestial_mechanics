@@ -13,20 +13,20 @@
 
 
 // N-body model of Jovian planets
-void nBodyApprox(const std::vector<OrbitalElements> &elements,
-                 std::vector<CelestialBody> &bodies, double julianDay);
+void nBodyApprox(std::vector<OrbitalStateVectors> &bodies,
+                 double daysSinceEpoch);
 
 
 // One-body approximation for Terrestrial planets
 void keplerianApprox(const std::vector<OrbitalElements> &elements,
-                     std::vector<CelestialBody> &bodies,
-                     const double julianDay);
+                     std::vector<OrbitalStateVectors> &bodies,
+                     const double daysSinceEpoch);
 
 
 int main() {
   // Initialize system
   std::vector<OrbitalElements> elements;
-  std::vector<CelestialBody> bodies;
+  std::vector<OrbitalStateVectors> bodies;
   populatePlanets(elements, bodies);
 
   // Initialize picture
@@ -34,14 +34,14 @@ int main() {
   const size_t systemSizeAU = approxSystemSize(elements);
   Picture pic(picSize, picSize, 0, 0, 0);
 
-  const double julianDay = getDate();
+  const double daysSinceEpoch = getDate();
 
   // Update planets to target date
-  //   keplerianApprox(elements, bodies, julianDay);
-  nBodyApprox(elements, bodies, julianDay);
+  //   keplerianApprox(elements, bodies, daysSinceEpoch);
+  nBodyApprox(bodies, daysSinceEpoch);
 
   // Output formatted results
-  printTest(bodies, julianDay);
+  printTest(bodies, daysSinceEpoch);
   //   printResults(bodies);
 
   drawBodies(bodies, pic, systemSizeAU, true);
@@ -50,17 +50,14 @@ int main() {
 
 
 // N-body model of Jovian planets
-void nBodyApprox(const std::vector<OrbitalElements> &elements,
-                 std::vector<CelestialBody> &bodies, double julianDay) {
+void nBodyApprox(std::vector<OrbitalStateVectors> &bodies,
+                 double daysSinceEpoch) {
 
-  // Use properties of Keplerian orbit to compute initial state vectors
-  for (size_t i = 0; i < bodies.size() - 1; i++) {
-    populateStateVectors(elements[i], bodies[i], 0);
-  }
+  populateStateVectors(bodies);
 
   // Numerically integrate, using each step to update planet
-  const int dt = (julianDay < 0 ? -1 : 1) * SEC_PER_DAY / 4; // 6-hours
-  const int steps = round(SEC_PER_DAY * abs(julianDay) / double(abs(dt)));
+  const int dt = (daysSinceEpoch < 0 ? -1 : 1) * SEC_PER_DAY / 4; // 6-hours
+  const int steps = round(SEC_PER_DAY * abs(daysSinceEpoch) / double(abs(dt)));
   for (int i = 0; i < steps; i++) {
     updateBodies(bodies, dt);
   }
@@ -69,10 +66,10 @@ void nBodyApprox(const std::vector<OrbitalElements> &elements,
 
 // One-body approximation for Terrestrial planets
 void keplerianApprox(const std::vector<OrbitalElements> &elements,
-                     std::vector<CelestialBody> &bodies,
-                     const double julianDay) {
+                     std::vector<OrbitalStateVectors> &bodies,
+                     const double daysSinceEpoch) {
 
   for (size_t i = 0; i < bodies.size() - 1; i++) {
-    populateStateVectors(elements[i], bodies[i], julianDay);
+    calcStateVectors(elements[i], bodies[i], daysSinceEpoch);
   }
 };

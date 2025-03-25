@@ -4,11 +4,12 @@
 #include "coord.h"
 #include <string>
 
-struct CelestialBody {
+struct OrbitalStateVectors {
   std::string name;
   Coord pos;
   Coord vel;
   double mass;
+  double period;
 };
 
 struct OrbitalElements {
@@ -18,7 +19,6 @@ struct OrbitalElements {
   double longitudeOfAscendingNode;
   double longitudeOfPerihelion;
   double meanAnomaly;
-  double period;
 };
 
 #endif
