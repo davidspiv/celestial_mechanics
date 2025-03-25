@@ -1,4 +1,3 @@
-#include <cmath>
 #include <vector>
 
 #include "../include/helpers.h"
@@ -8,8 +7,7 @@
 #include "../include/nBodyApprox.h"
 #include "../include/picture.h"
 #include "../include/planet.h"
-#include "../include/timer.h"
-#include "../include/util.h"
+
 
 int main() {
   // Initialize system
@@ -28,6 +26,6 @@ int main() {
 
   printTest(bodies, daysSinceEpoch);
   //   printResults(bodies);
-  drawBodies(bodies, pic, systemSizeAU, true);
+  drawBodies(bodies, pic, systemSizeAU);
   pic.save("result.png");
 }

@@ -7,7 +7,6 @@ struct Coord {
   Coord(double x, double y, double z);
 
   double magSquared(const Coord &other) const;
-
   void print() const;
 
   Coord operator+(const Coord &other) const;

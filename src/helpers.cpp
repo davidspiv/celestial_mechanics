@@ -6,22 +6,14 @@
 #include <vector>
 
 
-void drawBodies(const std::vector<StateVector> &planets, Picture &pic,
-                size_t systemSize, bool finalPos) {
+void drawBodies(const std::vector<StateVector> &bodies, Picture &pic,
+                size_t systemSize) {
 
-  for (StateVector p : planets) {
-    Coord pos = p.pos / M_PER_AU;
+  for (auto &b : bodies) {
+    Coord pos = b.pos / M_PER_AU;
     int x = scaleValue(pos.x, systemSize, pic.width() / 2) + pic.width() / 2;
     int y = scaleValue(-pos.y, systemSize, pic.width() / 2) + pic.width() / 2;
-    if (p.name == "sun")
-      pic.set(x, y, 255, 255, 0);
-    else {
-      if (!finalPos) {
-        pic.set(x, y, 0, 255, 0);
-      } else {
-        pic.set(x, y, 255, 0, 0);
-      }
-    }
+    pic.set(x, y, 0, 255, 0);
   }
 }
 
