@@ -4,7 +4,9 @@
 #include <vector>
 
 #include "../include/coord.h"
+#include "../include/helpers.h"
 #include "../include/json.h"
+#include "../include/picture.h"
 #include "../include/planet.h"
 #include "../include/util.h"
 
@@ -68,23 +70,9 @@ StateVector rungeKuttaStep(size_t pIndex,
 }
 
 
-void updateBodies(std::vector<StateVector> &planets, const int dt) {
-  std::vector<StateVector> updatedBodies(planets.size());
-
-  for (size_t i = 0; i < planets.size(); i++) {
-    updatedBodies[i] = rungeKuttaStep(i, planets, dt);
-  }
-
-  planets = updatedBodies;
-};
-
-
 // N-body model
-void nBodyApprox(std::vector<StateVector> &bodies, double daysSinceEpoch) {
-
-  // Include sun
-  static StateVector sun = {"sun", Coord(), Coord(), M_SUN};
-  bodies.emplace_back(sun);
+void nBodyApprox(std::vector<StateVector> &bodies, double daysSinceEpoch,
+                 Picture &pic, size_t systemSize) {
 
   // Data from J2000 epoch
   populateStateVectors(bodies);
@@ -93,6 +81,13 @@ void nBodyApprox(std::vector<StateVector> &bodies, double daysSinceEpoch) {
   const int dt = (daysSinceEpoch < 0 ? -1 : 1) * SEC_PER_DAY / 4; // 6-hours
   const int steps = round(SEC_PER_DAY * abs(daysSinceEpoch) / double(abs(dt)));
   for (int i = 0; i < steps; i++) {
-    updateBodies(bodies, dt);
+    std::vector<StateVector> updatedBodies(bodies.size());
+
+    for (size_t j = 0; j < bodies.size(); j++) {
+      updatedBodies[j] = rungeKuttaStep(j, bodies, dt);
+      drawBodies(bodies, pic, systemSize);
+    }
+
+    bodies = updatedBodies;
   }
 };

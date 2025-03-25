@@ -23,12 +23,12 @@ Picture::Picture(int width, int height, int red, int green, int blue)
   }
 }
 
-Picture::Picture(const vector<vector<int>> &grays) {
+Picture::Picture(const std::vector<std::vector<int>> &grays) {
   if (grays.size() == 0 || grays[0].size() == 0) {
     _width = 0;
     _height = 0;
   } else {
-    _values = vector<unsigned char>(grays[0].size() * grays.size() * 4);
+    _values = std::vector<unsigned char>(grays[0].size() * grays.size() * 4);
     _width = grays[0].size();
     _height = grays.size();
     int k = 0;
@@ -44,19 +44,19 @@ Picture::Picture(const vector<vector<int>> &grays) {
   }
 }
 
-Picture::Picture(string filename) {
+Picture::Picture(std::string filename) {
   unsigned int w, h;
   unsigned error = lodepng::decode(_values, w, h, filename.c_str());
   if (error != 0)
-    throw runtime_error(lodepng_error_text(error));
+    throw std::runtime_error(lodepng_error_text(error));
   _width = w;
   _height = h;
 }
 
-void Picture::save(string filename) const {
+void Picture::save(std::string filename) const {
   unsigned error = lodepng::encode(filename.c_str(), _values, _width, _height);
   if (error != 0)
-    throw runtime_error(lodepng_error_text(error));
+    throw std::runtime_error(lodepng_error_text(error));
 }
 
 int Picture::red(int x, int y) const {
@@ -102,10 +102,10 @@ void Picture::add(const Picture &other, int x, int y) {
     }
 }
 
-vector<vector<int>> Picture::grays() const {
-  vector<vector<int>> result(_height);
+std::vector<std::vector<int>> Picture::grays() const {
+  std::vector<std::vector<int>> result(_height);
   for (int y = 0; y < _height; y++) {
-    result[y] = vector<int>(_width);
+    result[y] = std::vector<int>(_width);
     for (int x = 0; x < _width; x++) {
       int k = 4 * (y * _width + x);
       result[y][x] = (int)(0.2126 * _values[k] + 0.7152 * _values[k + 1] +
@@ -162,9 +162,9 @@ void Picture::scale(const size_t factor) {
  */
 void Picture::ensure(int x, int y) {
   if (x >= _width || y >= _height) {
-    int new_width = max(x + 1, _width);
-    int new_height = max(y + 1, _height);
-    vector<unsigned char> new_values(4 * new_width * new_height);
+    int new_width = std::max(x + 1, _width);
+    int new_height = std::max(y + 1, _height);
+    std::vector<unsigned char> new_values(4 * new_width * new_height);
     fill(new_values.begin(), new_values.end(), 255); // fill with white
     int j = 0;
     for (int dy = 0; dy < _height; dy++)

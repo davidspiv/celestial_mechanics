@@ -6,7 +6,11 @@
 
 #include "lodepng.h"
 
-using namespace std;
+struct rgbColor {
+  int r;
+  int g;
+  int b;
+};
 
 class Picture {
 public:
@@ -19,7 +23,7 @@ public:
      Constructs a picture from the given PNG file.
      @param filename a file name that should specify a PNG file.
   */
-  Picture(string filename);
+  Picture(std::string filename);
 
   /**
      Constructs a picture with pixels in a single color (by default,
@@ -34,10 +38,10 @@ public:
           int blue = 255);
 
   /**
-     Constructs a picture from a two-dimensional vector of gray levels. @param
-     grays the gray levels
+     Constructs a picture from a two-dimensional std::vector of gray levels.
+     @param grays the gray levels
   */
-  Picture(const vector<vector<int>> &grays);
+  Picture(const std::vector<std::vector<int>> &grays);
 
   /**
      Returns the width of this picture.
@@ -55,7 +59,7 @@ public:
      Saves this picture to the given file.
      @param filename a file name that should specify a PNG file.
   */
-  void save(string filename) const;
+  void save(std::string filename) const;
 
   /**
      Yields the red value at the given position.
@@ -99,7 +103,7 @@ public:
      Yields the gray levels of all pixels of this image.
      @return a 2D array of gray values (between 0 and 255)
   */
-  vector<vector<int>> grays() const;
+  std::vector<std::vector<int>> grays() const;
 
   /**
      Adds a picture to this picture at a given position, expanding
@@ -115,7 +119,7 @@ public:
 private:
   void ensure(int x, int y);
 
-  vector<unsigned char> _values;
+  std::vector<unsigned char> _values;
   int _width;
   int _height;
 };

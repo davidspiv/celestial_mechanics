@@ -104,6 +104,8 @@ void keplerianApprox(const std::vector<OrbitalElements> &elements,
                      const double daysSinceEpoch) {
 
   for (size_t i = 0; i < bodies.size(); i++) {
-    calcStateVectors(elements[i], bodies[i], daysSinceEpoch);
+    if (bodies.at(i).name == "sun")
+      continue;
+    calcStateVectors(elements.at(i), bodies.at(i), daysSinceEpoch);
   }
 };

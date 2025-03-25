@@ -7,6 +7,7 @@
 #include "planet.h"
 
 // N-body model of Jovian planets
-void nBodyApprox(std::vector<StateVector> &bodies, double daysSinceEpoch);
+void nBodyApprox(std::vector<StateVector> &bodies, double daysSinceEpoch,
+                 Picture &pic, size_t systemSize);
 
 #endif
