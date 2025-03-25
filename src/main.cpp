@@ -14,8 +14,8 @@
 
 // N-body model of Jovian planets
 void handleJovianBodies(const std::vector<OrbitalElements> &elements,
-                        std::vector<CelestialBody> &bodies,
-                        const double julianDay, const size_t planetDivideIndex);
+                        std::vector<CelestialBody> &bodies, double julianDay,
+                        const size_t planetDivideIndex);
 
 
 // One-body approximation for Terrestrial planets
@@ -50,15 +50,14 @@ int main() {
   pic.save("result.png");
 
   // Output formatted results
-  //   printTest(bodies, julianDay);
-  printResults(bodies);
+  printTest(bodies, julianDay);
+  //   printResults(bodies);
 }
 
 
 // N-body model of Jovian planets
 void handleJovianBodies(const std::vector<OrbitalElements> &elements,
-                        std::vector<CelestialBody> &bodies,
-                        const double julianDay,
+                        std::vector<CelestialBody> &bodies, double julianDay,
                         const size_t planetDivideIndex) {
 
   // Use properties of Keplerian orbit to compute initial state vectors
@@ -71,8 +70,8 @@ void handleJovianBodies(const std::vector<OrbitalElements> &elements,
                                           bodies.end());
 
   // Numerically integrate, using each step to update planet
-  const int dt = SEC_PER_DAY * 7; // one week timestep
-  const int steps = round(SEC_PER_DAY * julianDay / double(dt));
+  const int dt = (julianDay < 0 ? -1 : 1) * SEC_PER_DAY * 7; // one week
+  const int steps = round(SEC_PER_DAY * abs(julianDay) / double(abs(dt)));
   for (int i = 0; i < steps; i++) {
     updateBodies(jovianBodies, dt);
   }

@@ -1,6 +1,7 @@
 #include "../include/planet.h"
 #include "../include/util.h"
 
+#include <exception>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -110,7 +111,10 @@ void populateSolutions(std::vector<CelestialBody> &bodies,
       break;
   }
 
-  while (std::getline(fileStream, line)) {
+  if (line.empty()) throw std::domain_error(
+	"No test corresponding to input date found.\n");
+
+  while (std::getline(fileStream, line) && line != "]") {
     const size_t objectStart = line.find(bodyStartKey);
 
     if (objectStart == std::string::npos)

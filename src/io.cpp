@@ -63,7 +63,7 @@ double getDate() {
         date.day > 0 && date.day <= 31) {
       isFormatted = true;
     } else {
-      std::cout << "Date formatted incorrectly, try again";
+      std::cout << "Date formatted incorrectly, try again" << std::endl;
     }
   } while (!isFormatted);
 
