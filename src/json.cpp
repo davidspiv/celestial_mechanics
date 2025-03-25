@@ -28,11 +28,11 @@ std::string getValueFromJSONLine(const std::string &line) {
 
 // reads planets.json into a parallel vectors
 void populatePlanets(std::vector<OrbitalElements> &elements,
-                     std::vector<OrbitalStateVectors> &bodies) {
+                     std::vector<StateVector> &bodies) {
   const std::string bodyStartKey = "\"name\": \"";
   std::fstream fileStream;
   std::string line;
-  int numBodies = 1; // include sun
+  int numBodies = 0;
 
   fileStream.open("planets.json");
 
@@ -44,7 +44,7 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
 
     // build element
     OrbitalElements element;
-    OrbitalStateVectors body;
+    StateVector body;
 
     body.name = getValueFromJSONLine(line);
 
@@ -78,15 +78,12 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
     numBodies++;
   }
 
-  static OrbitalStateVectors sun = {"sun", Coord(), Coord(), M_SUN};
-  bodies.emplace_back(sun);
-
   elements.resize(numBodies);
   bodies.resize(numBodies);
 }
 
 
-void populateSolutions(std::vector<OrbitalStateVectors> &bodies,
+void populateSolutions(std::vector<StateVector> &bodies,
                        const double daysSinceEpoch) {
 
   const double julianDay = daysSinceEpoch + 2451544.5;
@@ -121,7 +118,7 @@ void populateSolutions(std::vector<OrbitalStateVectors> &bodies,
       continue;
 
     // build element
-    OrbitalStateVectors body;
+    StateVector body;
 
     body.name = getValueFromJSONLine(line);
 
@@ -151,15 +148,11 @@ void populateSolutions(std::vector<OrbitalStateVectors> &bodies,
     numBodies++;
   }
 
-  static OrbitalStateVectors sun = {"sun", Coord(), Coord(), M_SUN};
-  bodies.emplace_back(sun);
-  numBodies++;
-
   bodies.resize(numBodies);
 }
 
 
-void populateStateVectors(std::vector<OrbitalStateVectors> &bodies) {
+void populateStateVectors(std::vector<StateVector> &bodies) {
 
   const std::string dataStartKey = "JD2451544.5";
   const std::string bodyStartKey = "\"name\": \"";

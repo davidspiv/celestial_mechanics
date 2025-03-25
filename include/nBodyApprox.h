@@ -6,6 +6,7 @@
 #include "picture.h"
 #include "planet.h"
 
-void updateBodies(std::vector<OrbitalStateVectors> &planets, const int dt);
+// N-body model of Jovian planets
+void nBodyApprox(std::vector<StateVector> &bodies, double daysSinceEpoch);
 
 #endif

@@ -72,11 +72,11 @@ double getDate() {
 
 
 // displays formatted results
-void printResults(const std::vector<OrbitalStateVectors> &planets) {
+void printResults(const std::vector<StateVector> &planets) {
   const Coord earthPos = planets.at(2).pos;
   const Coord sunPos = planets.at(planets.size() - 1).pos;
 
-  for (OrbitalStateVectors p : planets) {
+  for (StateVector p : planets) {
     // if (p.name == "sun")
     //   continue;
     std::cout << "----------------------------------\n";
@@ -93,13 +93,13 @@ void printResults(const std::vector<OrbitalStateVectors> &planets) {
 
 
 // gets answers from solutions.json and display formatted comparison
-void printTest(const std::vector<OrbitalStateVectors> &bodies,
+void printTest(const std::vector<StateVector> &bodies,
                const double daysSinceEpoch) {
-  std::vector<OrbitalStateVectors> solutionBodies;
+  std::vector<StateVector> solutionBodies;
   populateSolutions(solutionBodies, daysSinceEpoch);
 
   std::cout << "ERROR %\n\n";
-  OrbitalStateVectors sun = bodies.at(bodies.size() - 1);
+  StateVector sun = bodies.at(bodies.size() - 1);
   for (size_t i = 0; i < bodies.size() - 1; i++) {
     std::cout << std::setw(7) << "NAME: " << bodies[i].name << '\n';
     double posObserved = bodies[i].pos.magSquared(sun.pos);

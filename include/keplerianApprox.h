@@ -6,8 +6,8 @@
 #include "coord.h"
 #include "planet.h"
 
-// calculates heliocentric position and velocity vectors
-void calcStateVectors(const OrbitalElements &element, OrbitalStateVectors &body,
-                          float daysSinceEpoch);
+void keplerianApprox(const std::vector<OrbitalElements> &elements,
+                     std::vector<StateVector> &bodies,
+                     const double daysSinceEpoch);
 
 #endif

@@ -4,7 +4,7 @@
 #include "coord.h"
 #include <string>
 
-struct OrbitalStateVectors {
+struct StateVector {
   std::string name;
   Coord pos;
   Coord vel;

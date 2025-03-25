@@ -7,8 +7,7 @@
 #include <vector>
 
 
-double calcPeriod(const OrbitalElements &element,
-                  const OrbitalStateVectors &body) {
+double calcPeriod(const OrbitalElements &element, const StateVector &body) {
   const double proportionalityConstant =
       (4 * pow(M_PI, 2)) / (G * (body.mass + M_SUN));
 
@@ -52,8 +51,8 @@ double calcEccentricAnomaly(double eccentricity, double meanAnomaly) {
 
 
 // calculates heliocentric position and velocity vectors
-void calcStateVectors(const OrbitalElements &element,
-                          OrbitalStateVectors &body, float daysSinceEpoch) {
+void calcStateVectors(const OrbitalElements &element, StateVector &body,
+                      float daysSinceEpoch) {
 
   double period = calcPeriod(element, body);
 
@@ -98,3 +97,13 @@ void calcStateVectors(const OrbitalElements &element,
   // motion is counterclockwise
   body.vel = {orbitalSpeed * -yh, orbitalSpeed * xh, orbitalSpeed * zh};
 }
+
+// One-body approximation
+void keplerianApprox(const std::vector<OrbitalElements> &elements,
+                     std::vector<StateVector> &bodies,
+                     const double daysSinceEpoch) {
+
+  for (size_t i = 0; i < bodies.size(); i++) {
+    calcStateVectors(elements[i], bodies[i], daysSinceEpoch);
+  }
+};
