@@ -11,10 +11,14 @@ Picture::Picture() {
   _height = 0;
 }
 
-Picture::Picture(int width, int height, int red, int green, int blue)
+Picture::Picture(int width, int height, rgbColor color)
     : _values(width * height * 4) {
   _width = width;
   _height = height;
+  const int red = color.r;
+  const int green = color.g;
+  const int blue = color.b;
+
   for (size_t k = 0; k < _values.size(); k += 4) {
     _values[k] = red;
     _values[k + 1] = green;
@@ -80,7 +84,11 @@ int Picture::blue(int x, int y) const {
     return 0;
 }
 
-void Picture::set(int x, int y, int red, int green, int blue) {
+void Picture::set(int x, int y, rgbColor color) {
+  const int red = color.r;
+  const int green = color.g;
+  const int blue = color.b;
+
   if (x >= 0 && y >= 0) {
     ensure(x, y);
     int k = 4 * (y * _width + x);
@@ -96,8 +104,8 @@ void Picture::add(const Picture &other, int x, int y) {
   int k = 0;
   for (int dy = 0; dy < other._height; dy++)
     for (int dx = 0; dx < other._width; dx++) {
-      set(x + dx, y + dy, other._values[k], other._values[k + 1],
-          other._values[k + 2]);
+      set(x + dx, y + dy,
+          {other._values[k], other._values[k + 1], other._values[k + 2]});
       k += 4;
     }
 }

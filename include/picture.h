@@ -7,9 +7,9 @@
 #include "lodepng.h"
 
 struct rgbColor {
-  int r;
-  int g;
-  int b;
+  int r = 255;
+  int g = 255;
+  int b = 255;
 };
 
 class Picture {
@@ -34,8 +34,7 @@ public:
      @param width the width of the picture
      @param height the height of the picture
   */
-  Picture(int width, int height, int red = 255, int green = 255,
-          int blue = 255);
+  Picture(int width, int height, rgbColor color);
 
   /**
      Constructs a picture from a two-dimensional std::vector of gray levels.
@@ -97,7 +96,7 @@ public:
      @param green the green value of the pixel (between 0 and 255)
      @param blue the blue value of the pixel (between 0 and 255)
   */
-  void set(int x, int y, int red, int green, int blue);
+  void set(int x, int y, rgbColor color);
 
   /**
      Yields the gray levels of all pixels of this image.

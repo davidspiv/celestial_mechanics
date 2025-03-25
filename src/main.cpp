@@ -19,9 +19,10 @@ int main() {
   bodies.emplace_back(sun);
 
   // Initialize picture
+  const rgbColor cBackground = {13, 5, 41};
   const size_t picSize = 2000;
   const size_t systemSize = approxSystemSize(elements);
-  Picture pic(picSize, picSize, 13, 5, 41);
+  Picture pic(picSize, picSize, cBackground);
 
   const double daysSinceEpoch = getDate();
   //   keplerianApprox(elements, bodies, daysSinceEpoch);

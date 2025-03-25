@@ -5,33 +5,48 @@
 #include <cmath>
 #include <vector>
 
+const rgbColor cPath = {61, 23, 193};
+const rgbColor cSun = {255, 245, 160};
+const rgbColor cMercury = {200, 200, 200};
+const rgbColor cVenus = {240, 200, 170};
+const rgbColor cEarth = {100, 180, 255};
+const rgbColor cMars = {255, 110, 90};
+const rgbColor cJupiter = {230, 190, 140};
+const rgbColor cSaturn = {220, 200, 160};
+const rgbColor cUranus = {180, 220, 220};
+const rgbColor cNeptune = {90, 140, 200};
+
 void drawBodies(const std::vector<StateVector> &bodies, Picture &pic,
                 size_t systemSize, bool isPath = true) {
 
   const static int center = std::round(pic.width() / 2.0);
 
   auto drawPlanet = [&pic](const std::string &name, int x, int y) {
+    rgbColor planetColor;
+    if (name == "sun") {
+      planetColor = cSun;
+    } else if (name == "mercury") {
+      planetColor = cMercury;
+    } else if (name == "venus") {
+      planetColor = cVenus;
+    } else if (name == "earth") {
+      planetColor = cEarth;
+    } else if (name == "mars") {
+      planetColor = cMars;
+    } else if (name == "jupiter") {
+      planetColor = cJupiter;
+    } else if (name == "saturn") {
+      planetColor = cSaturn;
+    } else if (name == "uranus") {
+      planetColor = cUranus;
+    } else if (name == "neptune") {
+      planetColor = cNeptune;
+    }
+
+    // Draw 9x9 square
     for (int i = -1; i <= 1; i++) {
       for (int j = -1; j <= 1; j++) {
-        if (name == "sun") {
-          pic.set(x + i, y + j, 255, 245, 160);
-        } else if (name == "mercury") {
-          pic.set(x + i, y + j, 200, 200, 200);
-        } else if (name == "venus") {
-          pic.set(x + i, y + j, 240, 200, 170);
-        } else if (name == "earth") {
-          pic.set(x + i, y + j, 100, 180, 255);
-        } else if (name == "mars") {
-          pic.set(x + i, y + j, 255, 110, 90);
-        } else if (name == "jupiter") {
-          pic.set(x + i, y + j, 230, 190, 140);
-        } else if (name == "saturn") {
-          pic.set(x + i, y + j, 220, 200, 160);
-        } else if (name == "uranus") {
-          pic.set(x + i, y + j, 180, 220, 220);
-        } else if (name == "neptune") {
-          pic.set(x + i, y + j, 90, 140, 200);
-        }
+        pic.set(x + i, y + j, planetColor);
       }
     }
   };
@@ -42,7 +57,7 @@ void drawBodies(const std::vector<StateVector> &bodies, Picture &pic,
     int y = scaleValue(-pos.y, systemSize, center) + center;
 
     if (isPath) {
-      pic.set(x, y, 61, 23, 193);
+      pic.set(x, y, cPath);
     } else {
       drawPlanet(b.name, x, y);
     }
