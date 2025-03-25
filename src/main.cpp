@@ -25,11 +25,11 @@ int main() {
   Picture pic(picSize, picSize, cBackground);
 
   const double daysSinceEpoch = getDate();
-  //   keplerianApprox(elements, bodies, daysSinceEpoch);
+  // keplerianApprox(elements, bodies, daysSinceEpoch);
   nBodyApprox(bodies, daysSinceEpoch, pic, systemSize);
 
   printTest(bodies, daysSinceEpoch);
-  //   printResults(bodies);
+  // printResults(bodies);
   drawBodies(bodies, pic, systemSize, false);
   pic.save("result.png");
 }

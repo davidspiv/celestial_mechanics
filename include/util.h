@@ -19,6 +19,6 @@ double normalizeRadians(const double x);
 
 double toRadians(const double degrees);
 
-size_t scaleValue(const double x, const size_t currMax, const size_t newMax);
+int scaleValue(const double x, const int currMax, const int newMax);
 
 #endif

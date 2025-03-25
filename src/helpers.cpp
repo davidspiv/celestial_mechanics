@@ -19,7 +19,7 @@ const rgbColor cNeptune = {90, 140, 200};
 void drawBodies(const std::vector<StateVector> &bodies, Picture &pic,
                 size_t systemSize, bool isPath = true) {
 
-  const static int center = std::round(pic.width() / 2.0);
+  const static int center = pic.width() / 2;
 
   auto drawPlanet = [&pic](const std::string &name, int x, int y) {
     rgbColor planetColor;
@@ -55,6 +55,9 @@ void drawBodies(const std::vector<StateVector> &bodies, Picture &pic,
     Coord pos = b.pos / M_PER_AU;
     int x = scaleValue(pos.x, systemSize, center) + center;
     int y = scaleValue(-pos.y, systemSize, center) + center;
+
+    // std::cout << x << std::endl;
+    // std::cout << y << std::endl;
 
     if (isPath) {
       pic.set(x, y, cPath);

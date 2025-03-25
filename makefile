@@ -3,9 +3,9 @@ SRCDIR=src
 OBJDIR=build
 
 CXX=g++
-OPT=-O0
+# OPT=-O0
 DEPFLAGS=-MP -MD
-CXXFLAGS=-g -Wall -std=c++17 -fpermissive $(OPT) $(DEPFLAGS)
+CXXFLAGS=-g -Wall -std=c++17 -fpermissive $(DEPFLAGS)
 CPPFILES=$(wildcard $(SRCDIR)/*.cpp)
 OBJECTS=$(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(CPPFILES))
 DEPFILES=$(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.d,$(CPPFILES))

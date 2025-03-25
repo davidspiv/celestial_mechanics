@@ -5,9 +5,9 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
-
 
 // returns value as string regardless of data type
 std::string getValueFromJSONLine(const std::string &line) {
@@ -150,7 +150,6 @@ void populateSolutions(std::vector<StateVector> &bodies,
 
   bodies.resize(numBodies);
 }
-
 
 void populateStateVectors(std::vector<StateVector> &bodies) {
 
