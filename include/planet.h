@@ -9,7 +9,6 @@ struct OrbitalStateVectors {
   Coord pos;
   Coord vel;
   double mass;
-  double period;
 };
 
 struct OrbitalElements {

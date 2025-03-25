@@ -72,9 +72,6 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
     std::getline(fileStream, line);
     body.mass = std::stod(getValueFromJSONLine(line));
 
-    std::getline(fileStream, line);
-    body.period = std::stod(getValueFromJSONLine(line));
-
     elements.emplace_back(element);
     bodies.emplace_back(body);
 
@@ -148,8 +145,6 @@ void populateSolutions(std::vector<OrbitalStateVectors> &bodies,
     std::getline(fileStream, line);
     std::getline(fileStream, line);
     body.mass = std::stod(getValueFromJSONLine(line));
-
-    body.period = 0;
 
     bodies.emplace_back(body);
 
