@@ -32,7 +32,7 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
   const std::string bodyStartKey = "\"name\": \"";
   std::fstream fileStream;
   std::string line;
-  int numBodies = 0; // include sun
+  int numBodies = 1; // include sun
 
   fileStream.open("planets.json");
 
@@ -81,6 +81,9 @@ void populatePlanets(std::vector<OrbitalElements> &elements,
     numBodies++;
   }
 
+  static CelestialBody sun = {"sun", Coord(), Coord(), M_SUN};
+  bodies.emplace_back(sun);
+
   elements.resize(numBodies);
   bodies.resize(numBodies);
 }
@@ -100,7 +103,7 @@ void populateSolutions(std::vector<CelestialBody> &bodies,
   const std::string bodyStartKey = "\"name\": \"";
   std::fstream fileStream;
   std::string line;
-  int numBodies = 0; // include sun
+  int numBodies = 1; // include sun
 
   fileStream.open("solutions.json");
 
@@ -111,8 +114,8 @@ void populateSolutions(std::vector<CelestialBody> &bodies,
       break;
   }
 
-  if (line.empty()) throw std::domain_error(
-	"No test corresponding to input date found.\n");
+  if (line.empty())
+    throw std::domain_error("No test corresponding to input date found.\n");
 
   while (std::getline(fileStream, line) && line != "]") {
     const size_t objectStart = line.find(bodyStartKey);
@@ -150,6 +153,9 @@ void populateSolutions(std::vector<CelestialBody> &bodies,
 
     numBodies++;
   }
+
+  static CelestialBody sun = {"sun", Coord(), Coord(), M_SUN};
+  bodies.emplace_back(sun);
 
   bodies.resize(numBodies);
 }

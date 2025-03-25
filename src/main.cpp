@@ -5,7 +5,7 @@
 #include "../include/io.h"
 #include "../include/json.h"
 #include "../include/keplerianApprox.h"
-#include "../include/nBodySim.h"
+#include "../include/nBodyApprox.h"
 #include "../include/picture.h"
 #include "../include/planet.h"
 #include "../include/timer.h"
@@ -13,83 +13,66 @@
 
 
 // N-body model of Jovian planets
-void handleJovianBodies(const std::vector<OrbitalElements> &elements,
-                        std::vector<CelestialBody> &bodies, double julianDay,
-                        const size_t planetDivideIndex);
+void nBodyApprox(const std::vector<OrbitalElements> &elements,
+                 std::vector<CelestialBody> &bodies, double julianDay);
 
 
 // One-body approximation for Terrestrial planets
-void handleTerrestrialBodies(const std::vector<OrbitalElements> &elements,
-                             std::vector<CelestialBody> &bodies,
-                             const double julianDay,
-                             const size_t planetDivideIndex);
+void keplerianApprox(const std::vector<OrbitalElements> &elements,
+                     std::vector<CelestialBody> &bodies,
+                     const double julianDay);
 
 
 int main() {
-  // Parallel vectors to represent planets
+  // Initialize system
   std::vector<OrbitalElements> elements;
   std::vector<CelestialBody> bodies;
-
-  // Initialize system
-  const size_t planetDivideIndex = 4;
-  static CelestialBody sun = {"sun", Coord(), Coord(), M_SUN};
   populatePlanets(elements, bodies);
-  bodies.emplace_back(sun);
+
+  // Initialize picture
+  const size_t picSize = 500;
+  const size_t systemSizeAU = approxSystemSize(elements);
+  Picture pic(picSize, picSize, 0, 0, 0);
 
   const double julianDay = getDate();
 
   // Update planets to target date
-  handleJovianBodies(elements, bodies, julianDay, planetDivideIndex);
-  handleTerrestrialBodies(elements, bodies, julianDay, planetDivideIndex);
-
-  // Handle PNG output
-  const size_t picSize = 500;
-  const size_t systemSizeAU = approxSystemSize(elements);
-  Picture pic(picSize, picSize, 0, 0, 0);
-  drawBodies(bodies, pic, systemSizeAU, true);
-  pic.save("result.png");
+  //   keplerianApprox(elements, bodies, julianDay);
+  nBodyApprox(elements, bodies, julianDay);
 
   // Output formatted results
   printTest(bodies, julianDay);
   //   printResults(bodies);
+
+  drawBodies(bodies, pic, systemSizeAU, true);
+  pic.save("result.png");
 }
 
 
 // N-body model of Jovian planets
-void handleJovianBodies(const std::vector<OrbitalElements> &elements,
-                        std::vector<CelestialBody> &bodies, double julianDay,
-                        const size_t planetDivideIndex) {
+void nBodyApprox(const std::vector<OrbitalElements> &elements,
+                 std::vector<CelestialBody> &bodies, double julianDay) {
 
   // Use properties of Keplerian orbit to compute initial state vectors
-  for (size_t i = planetDivideIndex; i < bodies.size() - 1; i++) {
+  for (size_t i = 0; i < bodies.size() - 1; i++) {
     populateStateVectors(elements[i], bodies[i], 0);
   }
 
-  // Isolate bodies to include in model
-  std::vector<CelestialBody> jovianBodies(bodies.begin() + planetDivideIndex,
-                                          bodies.end());
-
   // Numerically integrate, using each step to update planet
-  const int dt = (julianDay < 0 ? -1 : 1) * SEC_PER_DAY * 7; // one week
+  const int dt = (julianDay < 0 ? -1 : 1) * SEC_PER_DAY / 4; // 6-hours
   const int steps = round(SEC_PER_DAY * abs(julianDay) / double(abs(dt)));
   for (int i = 0; i < steps; i++) {
-    updateBodies(jovianBodies, dt);
-  }
-
-  // Merge back updated bodies
-  for (size_t i = 0; i < jovianBodies.size(); i++) {
-    bodies[i + planetDivideIndex] = jovianBodies[i];
+    updateBodies(bodies, dt);
   }
 };
 
 
 // One-body approximation for Terrestrial planets
-void handleTerrestrialBodies(const std::vector<OrbitalElements> &elements,
-                             std::vector<CelestialBody> &bodies,
-                             const double julianDay,
-                             const size_t planetDivideIndex) {
+void keplerianApprox(const std::vector<OrbitalElements> &elements,
+                     std::vector<CelestialBody> &bodies,
+                     const double julianDay) {
 
-  for (size_t i = 0; i < planetDivideIndex; i++) {
+  for (size_t i = 0; i < bodies.size() - 1; i++) {
     populateStateVectors(elements[i], bodies[i], julianDay);
   }
 };
