@@ -28,8 +28,8 @@ int main() {
   // keplerianApprox(elements, bodies, daysSinceEpoch);
   nBodyApprox(bodies, daysSinceEpoch, pic, systemSize);
 
-  printTest(bodies, daysSinceEpoch);
-  // printResults(bodies);
+  // printTest(bodies, daysSinceEpoch);
+  printResults(bodies);
   drawBodies(bodies, pic, systemSize, false);
   pic.save("result.png");
 }
