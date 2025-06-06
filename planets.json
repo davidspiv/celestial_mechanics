@@ -79,6 +79,17 @@
 			"longitudeOfPerihelion": 44.97135,
 			"meanAnomaly": 259.883,
 			"mass": 1.02413e26
+		},
+		{
+			"name": "pluto", 
+			"semiMajorAxis": 5869.656,
+			"eccentricity": 0.2444,
+			"orbitalInclination": 17.14175,
+			"longitudeOfAscendingNode": 110.30347,
+			"longitudeOfPerihelion": 224.06676,
+			"meanAnomaly": 14.86205,
+			"mass": 1.3025e22
+
 		}
 	]
 }
